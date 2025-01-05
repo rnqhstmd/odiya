@@ -31,6 +31,9 @@ public enum ErrorType {
     MISSING_REQUEST_PARAMETER_ERROR("HTTP_40001", "필수 요청 파라미터가 누락되었습니다."),
     INVALID_REQUEST_FORMAT_ERROR("HTTP_40002", "요청에 필요한 데이터가 잘못되었습니다."),
 
+    // Member
+    MEMBER_NOT_FOUND("MEMBER_40000", "해당 회원을 찾을 수 없습니다."),
+
     // Internal Server
     INTERNAL_SERVER_ERROR("INTERNAL_50000", "서버 내부 에러입니다."),
 
