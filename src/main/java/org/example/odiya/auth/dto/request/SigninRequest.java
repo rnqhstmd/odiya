@@ -1,4 +1,4 @@
-package org.example.odiya.auth.dto;
+package org.example.odiya.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +15,7 @@ public record SigninRequest(
 
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
                 message = "비밀번호는 8자 이상의 영문자와 숫자 조합이어야 합니다.")
+        @NotBlank(message = "비밀번호는 필수입니다.")
         String password
 ) {
 }
