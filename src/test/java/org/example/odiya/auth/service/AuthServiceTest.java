@@ -12,9 +12,9 @@ import org.example.odiya.security.jwt.provider.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,16 +23,16 @@ class AuthServiceTest {
 
     private AuthService authService;
 
-    @Mock
+    @MockitoBean
     private MemberService memberService;
 
-    @Mock
+    @MockitoBean
     private MemberQueryService memberQueryService;
 
-    @Mock
+    @MockitoBean
     private JwtProvider jwtProvider;
 
-    @Mock
+    @MockitoBean
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
