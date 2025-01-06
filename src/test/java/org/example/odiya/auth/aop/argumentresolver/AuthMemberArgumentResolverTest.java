@@ -8,12 +8,12 @@ import org.example.odiya.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -24,30 +24,32 @@ class AuthMemberArgumentResolverTest {
 
     private AuthMemberArgumentResolver resolver;
 
-    @MockitoBean
+    @Mock
     private MethodParameter methodParameter;
 
-    @MockitoBean
+    @Mock
     private ModelAndViewContainer mavContainer;
 
-    @MockitoBean
+    @Mock
     private NativeWebRequest webRequest;
 
-    @MockitoBean
+    @Mock
     private WebDataBinderFactory binderFactory;
 
-    @MockitoBean
+    @Mock
     private Authentication authentication;
 
-    @MockitoBean
+    @Mock
     private SecurityContext securityContext;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         resolver = new AuthMemberArgumentResolver();
-        SecurityContextHolder.setContext(securityContext);
-    }
+
+        // Mock된 securityContext를 SecurityContextHolder에 설정
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);    }
 
     @Test
     @DisplayName("@AuthMember 어노테이션이 있을 경우 true 를 반환한다")
