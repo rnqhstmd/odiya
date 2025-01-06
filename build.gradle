@@ -44,6 +44,9 @@ dependencies {
 
     // RandomStringUtils
     implementation 'org.apache.commons:commons-lang3:3.0'
+
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
