@@ -29,4 +29,8 @@ public class MemberQueryService {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(MEMBER_NOT_FOUND));
     }
+
+    public boolean existsByInviteCode(String inviteCode) {
+        return memberRepository.existsByInviteCode(inviteCode);
+    }
 }

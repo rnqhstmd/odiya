@@ -1,4 +1,4 @@
-package org.example.odiya.security.auth.util;
+package org.example.odiya.common.util;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

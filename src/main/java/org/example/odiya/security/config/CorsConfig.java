@@ -12,7 +12,7 @@ import java.util.Arrays;
 @Configuration
 public class CorsConfig {
 
-    @Value("${cors.allowed-origins}")
+    @Value("${spring.cors.allowed-origins[0]}")
     private String[] allowedOrigins;
 
     @Bean

@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 import static org.example.odiya.common.exception.type.ErrorType.INTERNAL_SERVER_ERROR;
-import static org.example.odiya.security.auth.util.CookieUtil.getCookieValue;
+import static org.example.odiya.common.util.CookieUtil.getCookieValue;
 
 @Component
 @RequiredArgsConstructor
