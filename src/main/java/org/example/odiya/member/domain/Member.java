@@ -36,6 +36,7 @@ public class Member extends BaseEntity {
     private DeviceToken deviceToken;
 
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<Mate> mates = new ArrayList<>();
 
     // 6자리 숫자로 구성된 초대 코드를 생성
