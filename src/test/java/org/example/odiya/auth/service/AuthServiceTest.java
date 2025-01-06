@@ -72,8 +72,8 @@ class AuthServiceTest {
         Member member = Member.builder()
                 .id(1L)
                 .name("테스터")
-                .email("abc@test.com")
-                .password("abcd1234")
+                .email("email@example.com")
+                .password("password")
                 .build();
         when(memberQueryService.findExistingMemberByEmail(request.email())).thenReturn(member);
         when(passwordEncoder.matches(request.password(), member.getPassword())).thenReturn(true);
