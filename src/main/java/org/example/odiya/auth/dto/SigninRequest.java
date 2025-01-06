@@ -1,8 +1,10 @@
 package org.example.odiya.auth.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
+@Schema(description = "회원가입 요청 DTO")
 public record SigninRequest(
         @NotBlank(message = "이름은 필수입니다.")
         String name,
