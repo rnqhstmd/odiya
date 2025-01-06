@@ -8,12 +8,12 @@ import org.example.odiya.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -24,22 +24,22 @@ class AuthMemberArgumentResolverTest {
 
     private AuthMemberArgumentResolver resolver;
 
-    @Mock
+    @MockitoBean
     private MethodParameter methodParameter;
 
-    @Mock
+    @MockitoBean
     private ModelAndViewContainer mavContainer;
 
-    @Mock
+    @MockitoBean
     private NativeWebRequest webRequest;
 
-    @Mock
+    @MockitoBean
     private WebDataBinderFactory binderFactory;
 
-    @Mock
+    @MockitoBean
     private Authentication authentication;
 
-    @Mock
+    @MockitoBean
     private SecurityContext securityContext;
 
     @BeforeEach
