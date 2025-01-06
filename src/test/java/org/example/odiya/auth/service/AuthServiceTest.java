@@ -69,12 +69,14 @@ class AuthServiceTest {
     @DisplayName("로그인 성공")
     void login_withValidCredentials_returnsLoginResponse() {
         LoginRequest request = new LoginRequest("email@example.com", "password");
+
         Member member = Member.builder()
                 .id(1L)
                 .name("테스터")
                 .email("email@example.com")
                 .password("password")
                 .build();
+
         when(memberQueryService.findExistingMemberByEmail(request.email())).thenReturn(member);
         when(passwordEncoder.matches(request.password(), member.getPassword())).thenReturn(true);
         when(jwtProvider.generateJwtToken(member.getEmail())).thenReturn("jwtToken");
