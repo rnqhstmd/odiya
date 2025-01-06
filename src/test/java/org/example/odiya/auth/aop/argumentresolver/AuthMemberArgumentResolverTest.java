@@ -46,8 +46,10 @@ class AuthMemberArgumentResolverTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         resolver = new AuthMemberArgumentResolver();
-        SecurityContextHolder.setContext(securityContext);
-    }
+
+        // Mock된 securityContext를 SecurityContextHolder에 설정
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);    }
 
     @Test
     @DisplayName("@AuthMember 어노테이션이 있을 경우 true 를 반환한다")

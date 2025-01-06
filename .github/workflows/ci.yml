@@ -16,17 +16,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: 🐳 JDK 11 세팅
+    - name: 🐳 JDK 17 세팅
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: '21'
         distribution: 'temurin'
 
     - name: 🐳 gradlew 실행 권한 설정
       run: chmod +x gradlew
  
     - name: 🐳 테스트 진행
-      run: ./gradlew --info test
+      run: ./gradlew --info test -Dspring.profiles.active=test
       
     - name: 🐳 테스트 결과 Report
       uses: EnricoMi/publish-unit-test-result-action@v2
