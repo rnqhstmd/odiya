@@ -26,5 +26,5 @@ spring:
 security:
   jwt:
     token:
-      access-secret-key: ${ACCESS_SECRET}
+      access-secret-key: "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest"
       access-expire-length: 3600
