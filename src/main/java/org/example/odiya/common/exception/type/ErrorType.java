@@ -36,8 +36,13 @@ public enum ErrorType {
     MEMBER_NOT_FOUND("MEMBER_40000", "해당 회원을 찾을 수 없습니다."),
     DUPLICATION_EMAIL_ERROR("MEMBER_40001", "이미 사용중인 이메일입니다."),
 
+    // Map
+    SEARCH_RESULT_NOT_FOUND("MAP_40400", "검색 결과가 없습니다."),
+
     // Internal Server
     INTERNAL_SERVER_ERROR("INTERNAL_50000", "서버 내부 에러입니다."),
+    REST_CLIENT_ERROR("INTERNAL_50001", "카카오맵 API 호출 에러입니다."),
+    TOO_MANY_REQUEST_ERROR("INTERNAL_50002", "API 호출 한도를 초과했습니다."),
 
     // Validation
     NOT_NULL_VALID_ERROR("VALID_90000", "필수값이 누락되었습니다."),
