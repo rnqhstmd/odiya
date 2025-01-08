@@ -33,11 +33,17 @@ public enum ErrorType {
     INVALID_REQUEST_FORMAT_ERROR("HTTP_40002", "요청에 필요한 데이터가 잘못되었습니다."),
 
     // Member
-    MEMBER_NOT_FOUND("MEMBER_40000", "해당 회원을 찾을 수 없습니다."),
-    DUPLICATION_EMAIL_ERROR("MEMBER_40001", "이미 사용중인 이메일입니다."),
+    MEMBER_NOT_FOUND_ERROR("MEMBER_40400", "해당 회원을 찾을 수 없습니다."),
+    DUPLICATION_EMAIL_ERROR("MEMBER_40901", "이미 사용중인 이메일입니다."),
 
     // Map
-    SEARCH_RESULT_NOT_FOUND("MAP_40400", "검색 결과가 없습니다."),
+    SEARCH_RESULT_NOT_FOUND_ERROR("MAP_40400", "검색 결과가 없습니다."),
+
+    // Meeting
+    MEETING_NOT_FOUND_ERROR("MEETING_40400", "해당 모임을 찾을 수 없습니다."),
+
+    // Mate
+    DUPLICATION_MATE_ERROR("MATE_40900", "해당 약속에 이미 참여한 멤버입니다."),
 
     // Internal Server
     INTERNAL_SERVER_ERROR("INTERNAL_50000", "서버 내부 에러입니다."),
