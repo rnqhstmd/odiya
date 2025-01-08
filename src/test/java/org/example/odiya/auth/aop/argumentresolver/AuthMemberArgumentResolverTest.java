@@ -2,7 +2,8 @@ package org.example.odiya.auth.aop.argumentresolver;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.example.odiya.auth.aop.annotation.AuthMember;
+import org.example.odiya.common.annotation.AuthMember;
+import org.example.odiya.common.argumentresolver.AuthMemberArgumentResolver;
 import org.example.odiya.common.exception.UnauthorizedException;
 import org.example.odiya.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
