@@ -7,7 +7,7 @@ import org.example.odiya.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.example.odiya.common.exception.type.ErrorType.MEMBER_NOT_FOUND;
+import static org.example.odiya.common.exception.type.ErrorType.MEMBER_NOT_FOUND_ERROR;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,7 +18,7 @@ public class MemberQueryService {
 
     public Member findExistingMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(MEMBER_NOT_FOUND_ERROR));
     }
 
     public boolean existsByEmail(String email) {
@@ -27,7 +27,7 @@ public class MemberQueryService {
 
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException(MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(MEMBER_NOT_FOUND_ERROR));
     }
 
     public boolean existsByInviteCode(String inviteCode) {
