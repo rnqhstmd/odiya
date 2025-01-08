@@ -12,6 +12,12 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import static org.example.odiya.common.exception.type.ErrorType.REST_CLIENT_ERROR;
 import static org.example.odiya.common.exception.type.ErrorType.SEARCH_RESULT_NOT_FOUND;
 
@@ -34,20 +40,21 @@ public class MapService {
     public MapSearchResponse searchByKeyword(String query) {
         try {
             HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "KakaoAK " + key);
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            String url = UriComponentsBuilder
-                    .fromHttpUrl(host)
+            URI uri = UriComponentsBuilder
+                    .fromUriString(host)
                     .path(searchPath)
                     .queryParam("query", query)
-                    .build(false)
-                    .encode()
-                    .toString();
+                    .build()
+                    .encode(StandardCharsets.UTF_8)
+                    .toUri();
 
             ResponseEntity<MapSearchResponse> response = restTemplate.exchange(
-                    url,
+                    uri,
                     HttpMethod.GET,
                     entity,
                     MapSearchResponse.class
