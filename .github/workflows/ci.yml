@@ -26,6 +26,9 @@ jobs:
       run: chmod +x gradlew
  
     - name: 🐳 테스트 진행
+      env:
+        KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
+        ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
       run: ./gradlew --info test -Dspring.profiles.active=test
       
     - name: 🐳 테스트 결과 Report
