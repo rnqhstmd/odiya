@@ -1,16 +1,14 @@
 package org.example.odiya.mate.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.odiya.common.domain.BaseEntity;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.member.domain.Member;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Mate extends BaseEntity {
