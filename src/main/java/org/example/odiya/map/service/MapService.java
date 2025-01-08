@@ -15,8 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
-import static org.example.odiya.common.exception.type.ErrorType.REST_CLIENT_ERROR;
-import static org.example.odiya.common.exception.type.ErrorType.SEARCH_RESULT_NOT_FOUND_ERROR;
+import static org.example.odiya.common.exception.type.ErrorType.*;
 
 @Slf4j
 @Service
@@ -66,5 +65,13 @@ public class MapService {
             log.error("카카오 API 호출 중 오류 발생", e);
             throw new InternalServerException(REST_CLIENT_ERROR, e.getMessage());
         }
+    }
+
+    public MapSearchResponse.Document findPlaceById(String placeId) {
+        MapSearchResponse response = searchByKeyword(placeId);
+        return response.getDocuments().stream()
+                .filter(doc -> doc.getId().equals(placeId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(PLACE_NOT_FOUND_ERROR));
     }
 }
