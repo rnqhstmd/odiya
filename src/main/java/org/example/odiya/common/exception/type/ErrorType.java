@@ -38,6 +38,7 @@ public enum ErrorType {
 
     // Map
     SEARCH_RESULT_NOT_FOUND_ERROR("MAP_40400", "검색 결과가 없습니다."),
+    PLACE_NOT_FOUND_ERROR("MAP_40401", "해당 장소를 찾을 수 없습니다."),
 
     // Meeting
     MEETING_NOT_FOUND_ERROR("MEETING_40400", "해당 모임을 찾을 수 없습니다."),
