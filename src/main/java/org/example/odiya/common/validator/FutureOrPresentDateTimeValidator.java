@@ -5,10 +5,11 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.example.odiya.common.annotation.FutureOrPresentDateTime;
 import org.example.odiya.common.exception.InternalServerException;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.example.odiya.common.exception.type.ErrorType.INTERNAL_SERVER_ERROR;
 
@@ -24,22 +25,30 @@ public class FutureOrPresentDateTimeValidator implements ConstraintValidator<Fut
     }
 
     @Override
-    public boolean isValid(Object object, ConstraintValidatorContext context) {
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
         try {
-            Class<?> objectClass = object.getClass();
-            Method dateGetter = objectClass.getMethod(dateFieldName);
-            Method timeGetter = objectClass.getMethod(timeFieldName);
+            Field dateField = value.getClass().getDeclaredField(dateFieldName);
+            Field timeField = value.getClass().getDeclaredField(timeFieldName);
+            dateField.setAccessible(true);
+            timeField.setAccessible(true);
 
-            LocalDate dateInput = (LocalDate) dateGetter.invoke(object);
-            LocalTime timeInput = (LocalTime) timeGetter.invoke(object);
+            LocalDate date = (LocalDate) dateField.get(value);
+            LocalTime time = (LocalTime) timeField.get(value);
 
-            LocalDateTime dateTimeInput = LocalDateTime.of(dateInput, timeInput);
-            LocalDateTime now = LocalDateTime.now();
-
-            if (dateInput.isEqual(now.toLocalDate())) {
-                return dateTimeInput.isAfter(now);
+            if (date == null || time == null) {
+                return true;
             }
-            return dateInput.isAfter(LocalDate.now());
+
+            LocalDateTime dateTime = LocalDateTime.of(date, time);
+            if (dateTime.isBefore(LocalDateTime.now())) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(
+                        "약속 날짜와 시간은 현재 이후여야 합니다. (선택된 시간: " +
+                                dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + ")"
+                ).addConstraintViolation();
+                return false;
+            }
+            return true;
         } catch (Exception e) {
             throw new InternalServerException(INTERNAL_SERVER_ERROR, e.getMessage());
         }
