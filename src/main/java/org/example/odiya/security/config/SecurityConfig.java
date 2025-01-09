@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.odiya.security.handler.CustomAuthenticationEntryPoint;
 import org.example.odiya.security.jwt.filter.JwtAuthenticationFilter;
 import org.example.odiya.security.jwt.filter.JwtExceptionFilter;
+import org.example.odiya.security.logger.GlobalLoggerFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,23 +16,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import static org.example.odiya.security.constant.Constants.WHITE_LIST;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] WHITELIST = {
-            "/v3/api-docs/**",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui/**",
-            "/webjars/**",
-            "/favicon.ico",
-            "/h2-console",
-            "/api/auth/**",
-    };
     private final CorsConfigurationSource corsConfigurationSource;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -43,13 +34,14 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(WHITELIST).permitAll()
+                        .requestMatchers(WHITE_LIST).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandler -> exceptionHandler
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new GlobalLoggerFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
