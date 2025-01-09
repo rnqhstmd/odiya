@@ -1,4 +1,4 @@
-package org.example.odiya.auth.aop.annotation;
+package org.example.odiya.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

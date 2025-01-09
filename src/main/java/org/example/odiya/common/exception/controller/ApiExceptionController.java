@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -40,6 +41,17 @@ public class ApiExceptionController {
                     errorType.getErrorCode(),
                     errorType.getMessage(),
                     detail
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        //
+        ObjectError globalError = exception.getBindingResult().getGlobalError();
+        if (globalError != null) {
+            ApiExceptionResponse response = new ApiExceptionResponse(
+                    "VALIDATION_ERROR",
+                    "날짜/시간 검증 실패",
+                    globalError.getDefaultMessage()
             );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }

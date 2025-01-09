@@ -1,6 +1,6 @@
-package org.example.odiya.auth.aop.argumentresolver;
+package org.example.odiya.common.argumentresolver;
 
-import org.example.odiya.auth.aop.annotation.AuthMember;
+import org.example.odiya.common.annotation.AuthMember;
 import org.example.odiya.common.exception.UnauthorizedException;
 import org.example.odiya.member.domain.Member;
 import org.springframework.core.MethodParameter;

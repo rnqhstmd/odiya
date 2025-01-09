@@ -15,8 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
-import static org.example.odiya.common.exception.type.ErrorType.REST_CLIENT_ERROR;
-import static org.example.odiya.common.exception.type.ErrorType.SEARCH_RESULT_NOT_FOUND;
+import static org.example.odiya.common.exception.type.ErrorType.*;
 
 @Slf4j
 @Service
@@ -58,7 +57,7 @@ public class MapService {
             );
 
             if (response.getBody() == null || response.getBody().getDocuments().isEmpty()) {
-                throw new NotFoundException(SEARCH_RESULT_NOT_FOUND);
+                throw new NotFoundException(SEARCH_RESULT_NOT_FOUND_ERROR);
             }
             return response.getBody();
 
