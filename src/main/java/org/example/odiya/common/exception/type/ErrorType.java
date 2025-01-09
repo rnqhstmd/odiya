@@ -41,7 +41,8 @@ public enum ErrorType {
     PLACE_NOT_FOUND_ERROR("MAP_40401", "해당 장소를 찾을 수 없습니다."),
 
     // Meeting
-    MEETING_NOT_FOUND_ERROR("MEETING_40400", "해당 모임을 찾을 수 없습니다."),
+    MEETING_NOT_FOUND_ERROR("MEETING_40400", "해당 약속을 찾을 수 없습니다."),
+    MEETING_OVERDUE_ERROR("MEETING_40401", "해당 약속은 이미 종료되었습니다."),
 
     // Mate
     DUPLICATION_MATE_ERROR("MATE_40900", "해당 약속에 이미 참여한 멤버입니다."),
