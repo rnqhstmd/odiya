@@ -66,12 +66,4 @@ public class MapService {
             throw new InternalServerException(REST_CLIENT_ERROR, e.getMessage());
         }
     }
-
-    public MapSearchResponse.Document findPlaceById(String placeId) {
-        MapSearchResponse response = searchByKeyword(placeId);
-        return response.getDocuments().stream()
-                .filter(doc -> doc.getId().equals(placeId))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(PLACE_NOT_FOUND_ERROR));
-    }
 }
