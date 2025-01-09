@@ -55,17 +55,6 @@ public class MapSearchResponse {
         private String x;  // 경도
         private String y;  // 위도
 
-        public PlaceSearchResponse.PlaceDto toPlaceDto() {
-            return new PlaceSearchResponse.PlaceDto(
-                    this.id,
-                    this.placeName,
-                    this.addressName,
-                    this.roadAddressName,
-                    this.x,
-                    this.y
-            );
-        }
-
         @JsonProperty("address_name")
         public void setAddressName(String addressName) {
             this.addressName = addressName;
