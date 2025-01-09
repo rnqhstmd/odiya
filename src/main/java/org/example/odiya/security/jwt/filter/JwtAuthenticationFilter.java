@@ -12,12 +12,15 @@ import org.example.odiya.security.jwt.provider.JwtProvider;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.example.odiya.common.exception.type.ErrorType.INTERNAL_SERVER_ERROR;
 import static org.example.odiya.common.util.CookieUtil.getCookieValue;
+import static org.example.odiya.security.constant.Constants.WHITE_LIST;
 
 @Component
 @RequiredArgsConstructor
@@ -51,16 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicUri(final String requestURI) {
-        return
-                requestURI.startsWith("/swagger-ui/**") ||
-                        requestURI.startsWith("/health") ||
-                        requestURI.startsWith("/v3/api-docs/**") ||
-                        requestURI.startsWith("/h2-console") ||
-                        requestURI.startsWith("/favicon.ico") ||
-                        requestURI.startsWith("/error") ||
-                        requestURI.startsWith("/ws/**") ||
-                        requestURI.startsWith("/api/auth/signup") ||
-                        requestURI.startsWith("/api/auth/login");
+        return Arrays.stream(WHITE_LIST)
+                .anyMatch(pattern ->
+                        new AntPathMatcher().match(pattern, requestURI));
     }
 }
 
