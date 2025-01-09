@@ -2,10 +2,25 @@ package org.example.odiya.meeting.repository;
 
 import org.example.odiya.meeting.domain.Meeting;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     Optional<Meeting> findByInviteCode(String inviteCode);
+
+    @Query("UPDATE Meeting m SET m.overdue = true " +
+            "WHERE m.overdue = false " +
+            "AND m.date <= :date " +  // 날짜 비교
+            "AND m.time <= :time")    // 시간 비교
+    @Modifying
+    int bulkUpdateOverdueStatus(
+            @Param("date") LocalDate date,
+            @Param("time") LocalTime time
+    );
 }
