@@ -39,17 +39,13 @@ public class MeetingService {
                 .build();
         newMeeting.generateInviteCode();
 
-        meetingRepository.save(newMeeting);
+        Meeting savedMeeting = meetingRepository.save(newMeeting);
 
         // 약속 생성자를 참가자로 등록
-        Mate mate = Mate.builder()
-                .member(member)
-                .meeting(newMeeting)
-                .build();
+        Mate mate = new Mate(member, savedMeeting);
+        mateService.saveMate(mate);
 
-        mateService.joinMeeting(mate);
-
-        return MeetingResponse.from(newMeeting);
+        return MeetingResponse.from(savedMeeting);
     }
 
     public void joinMeeting(Member member, String inviteCode) {
@@ -64,6 +60,6 @@ public class MeetingService {
                 .meeting(meeting)
                 .build();
 
-        mateService.joinMeeting(mate);
+        mateService.saveMate(mate);
     }
 }

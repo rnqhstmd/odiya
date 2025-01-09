@@ -13,7 +13,7 @@ public class MateService {
 
     private final MateRepository mateRepository;
 
-    public void joinMeeting(Mate mate) {
+    public void saveMate(Mate mate) {
         mateRepository.save(mate);
     }
 }
