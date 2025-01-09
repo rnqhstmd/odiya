@@ -78,7 +78,7 @@ class MeetingServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getName()).isEqualTo(request.getName());
         verify(meetingRepository, times(1)).save(any(Meeting.class));
-        verify(mateService, times(1)).joinMeeting(any(Mate.class));
+        verify(mateService, times(1)).saveMate(any(Mate.class));
     }
 
     @Test
@@ -91,6 +91,6 @@ class MeetingServiceTest {
 
         verify(meetingQueryService, times(1)).findMeetingByInviteCode(anyString());
         verify(mateQueryService, times(1)).isMateExist(anyLong(), anyLong());
-        verify(mateService, times(1)).joinMeeting(any(Mate.class));
+        verify(mateService, times(1)).saveMate(any(Mate.class));
     }
 }
