@@ -1,4 +1,4 @@
-package org.example.odiya.security.constant;
+package org.example.odiya.common.constant;
 
 public class Constants {
 
@@ -16,4 +16,7 @@ public class Constants {
             "/h2-console/**",
             "/api/auth/**"
     };
+
+    public static final String MODE_WALKING = "walking";
+    public static final String STATUS_OK = "OK";
 }

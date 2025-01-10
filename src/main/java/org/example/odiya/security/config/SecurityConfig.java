@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import static org.example.odiya.security.constant.Constants.WHITE_LIST;
+import static org.example.odiya.common.constant.Constants.WHITE_LIST;
 
 @Configuration
 @EnableWebSecurity

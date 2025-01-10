@@ -47,9 +47,14 @@ public enum ErrorType {
     // Mate
     DUPLICATION_MATE_ERROR("MATE_40900", "해당 약속에 이미 참여한 멤버입니다."),
 
+    // Route
+    SEARCH_ROUTE_NOT_FOUND_ERROR("ROUTE_40400", "도보 경로를 찾을 수 없습니다."),
+    INVALID_ROUTE_REQUEST_ERROR("ROUTE_40000", "경로 요청이 잘못되었습니다."),
+    REQUEST_DENIED_ERROR("ROUTE_40003", "요청이 거부되었습니다."),
+
     // Internal Server
     INTERNAL_SERVER_ERROR("INTERNAL_50000", "서버 내부 에러입니다."),
-    REST_CLIENT_ERROR("INTERNAL_50001", "카카오맵 API 호출 에러입니다."),
+    EXTERNAL_API_ERROR("INTERNAL_50001", "외부 API 호출 에러입니다."),
     TOO_MANY_REQUEST_ERROR("INTERNAL_50002", "API 호출 한도를 초과했습니다."),
 
     // Validation
@@ -68,6 +73,17 @@ public enum ErrorType {
             case "Pattern" -> REGEX_VALID_ERROR;
             case "Size" -> LENGTH_VALID_ERROR;
             default -> throw new IllegalArgumentException("Unexpected value: " + code);
+        };
+    }
+
+    public static ErrorType resolveClientApiStatus(String status) {
+        return switch (status) {
+            case "ZERO_RESULTS" -> SEARCH_ROUTE_NOT_FOUND_ERROR;
+            case "INVALID_REQUEST" -> INVALID_ROUTE_REQUEST_ERROR;
+            case "REQUEST_DENIED" -> REQUEST_DENIED_ERROR;
+            case "OVER_QUERY_LIMIT" -> TOO_MANY_REQUEST_ERROR;
+            case "UNKNOWN_ERROR" -> EXTERNAL_API_ERROR;
+            default -> throw new IllegalArgumentException("Unexpected Client API status: " + status);
         };
     }
 }

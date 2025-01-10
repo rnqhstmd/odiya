@@ -29,6 +29,7 @@ jobs:
       env:
         KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
         ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: ./gradlew --info test -Dspring.profiles.active=test
       
     - name: 🐳 테스트 결과 Report
