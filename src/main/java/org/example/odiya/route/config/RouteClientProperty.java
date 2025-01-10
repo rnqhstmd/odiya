@@ -7,6 +7,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "google.api")
 public class RouteClientProperty {
 
-    private String key;
-    private String url;
+    private final String key;
+    private final String url;
+
+    public RouteClientProperty(String key, String url) {
+        this.key = key;
+        this.url = url;
+    }
 }
