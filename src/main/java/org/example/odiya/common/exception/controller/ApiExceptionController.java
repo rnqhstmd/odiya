@@ -45,7 +45,6 @@ public class ApiExceptionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        //
         ObjectError globalError = exception.getBindingResult().getGlobalError();
         if (globalError != null) {
             ApiExceptionResponse response = new ApiExceptionResponse(
