@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 import static org.example.odiya.common.exception.type.ErrorType.INTERNAL_SERVER_ERROR;
 import static org.example.odiya.common.util.CookieUtil.getCookieValue;
-import static org.example.odiya.security.constant.Constants.WHITE_LIST;
+import static org.example.odiya.common.constant.Constants.WHITE_LIST;
 
 @Component
 @RequiredArgsConstructor
