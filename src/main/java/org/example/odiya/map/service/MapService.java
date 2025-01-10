@@ -63,7 +63,7 @@ public class MapService {
 
         } catch (RestClientException e) {
             log.error("카카오 API 호출 중 오류 발생", e);
-            throw new InternalServerException(REST_CLIENT_ERROR, e.getMessage());
+            throw new InternalServerException(EXTERNAL_API_ERROR, "카카오 API 응답이 null입니다. "+e.getMessage());
         }
     }
 }
