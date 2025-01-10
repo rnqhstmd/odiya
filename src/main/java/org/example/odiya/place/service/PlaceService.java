@@ -1,10 +1,10 @@
-package org.example.odiya.map.service;
+package org.example.odiya.place.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.odiya.common.exception.InternalServerException;
 import org.example.odiya.common.exception.NotFoundException;
-import org.example.odiya.map.dto.response.MapSearchResponse;
+import org.example.odiya.place.dto.response.MapSearchResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import static org.example.odiya.common.exception.type.ErrorType.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MapService {
+public class PlaceService {
 
     @Value("${kakao.api.key}")
     private String key;

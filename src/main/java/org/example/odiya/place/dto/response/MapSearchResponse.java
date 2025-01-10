@@ -1,4 +1,4 @@
-package org.example.odiya.map.dto.response;
+package org.example.odiya.place.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
