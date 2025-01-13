@@ -5,7 +5,6 @@ import java.util.function.UnaryOperator;
 
 public enum ClientType {
 
-    ODSAY(date -> date),
     GOOGLE(date -> date.withDayOfMonth(1)),
     ;
 
