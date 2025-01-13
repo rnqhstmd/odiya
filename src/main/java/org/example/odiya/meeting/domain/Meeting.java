@@ -32,7 +32,6 @@ public class Meeting extends BaseEntity {
     private Location target;
 
     @Column
-    @NotNull
     private LocalDate date;
 
     @Column
