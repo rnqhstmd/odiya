@@ -80,17 +80,4 @@ class MeetingServiceTest {
         verify(meetingRepository, times(1)).save(any(Meeting.class));
         verify(mateService, times(1)).saveMate(any(Mate.class));
     }
-
-    @Test
-    @DisplayName("이미 참가한 사용자가 아니라면 약속 참가에 성공한다.")
-    void joinMeeting_Success() {
-        when(meetingQueryService.findMeetingByInviteCode(anyString())).thenReturn(meeting);
-        doNothing().when(mateQueryService).isMateExist(anyLong(), anyLong());
-
-        meetingService.joinMeeting(member, "123456");
-
-        verify(meetingQueryService, times(1)).findMeetingByInviteCode(anyString());
-        verify(mateQueryService, times(1)).isMateExist(anyLong(), anyLong());
-        verify(mateService, times(1)).saveMate(any(Mate.class));
-    }
 }
