@@ -11,18 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Location {
 
-    private String placeName;
     private String address;
 
     @Embedded
     private Coordinates coordinates;
 
-    public Location(String placeName, String address, String latitude, String longitude) {
-        this(placeName, address, new Coordinates(latitude, longitude));
+    public Location(String address, String latitude, String longitude) {
+        this(address, new Coordinates(latitude, longitude));
     }
 
-    public Location(String placeName, String address, Coordinates coordinates) {
-        this.placeName = placeName;
+    public Location( String address, Coordinates coordinates) {
         this.address = address;
         this.coordinates = coordinates;
     }
