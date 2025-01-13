@@ -36,7 +36,6 @@ public class Meeting extends BaseEntity {
     private LocalDate date;
 
     @Column
-    @NotNull
     private LocalTime time;
 
     @Column(columnDefinition = "CHAR(6)", unique = true)
