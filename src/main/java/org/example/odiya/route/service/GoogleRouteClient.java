@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
 
-import static org.example.odiya.common.constant.Constants.MODE_WALKING;
+import static org.example.odiya.common.constant.Constants.MODE_TRANSIT;
 import static org.example.odiya.common.constant.Constants.STATUS_OK;
 import static org.example.odiya.common.exception.type.ErrorType.*;
 
@@ -37,7 +37,7 @@ public class GoogleRouteClient implements RouteClient {
         return UriComponentsBuilder.fromHttpUrl(properties.getUrl())
                 .queryParam("origin", formatCoordinate(origin))
                 .queryParam("destination", formatCoordinate(target))
-                .queryParam("mode", MODE_WALKING)
+                .queryParam("mode", MODE_TRANSIT)
                 .queryParam("key", properties.getKey())
                 .build()
                 .toUriString();

@@ -17,6 +17,6 @@ public class Constants {
             "/api/auth/**"
     };
 
-    public static final String MODE_WALKING = "walking";
+    public static final String MODE_TRANSIT = "transit";
     public static final String STATUS_OK = "OK";
 }
