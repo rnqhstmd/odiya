@@ -1,7 +1,6 @@
 package org.example.odiya.meeting.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.example.odiya.common.domain.BaseEntity;
@@ -63,5 +62,9 @@ public class Meeting extends BaseEntity {
 
     public LocalDateTime getMeetingTime() {
         return TimeUtil.trimSecondsAndNanos(LocalDateTime.of(date, time));
+    }
+
+    public Coordinates getTargetCoordinates() {
+        return target.getCoordinates();
     }
 }
