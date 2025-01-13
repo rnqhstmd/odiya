@@ -49,6 +49,9 @@ public class Meeting extends BaseEntity {
     @OneToMany(mappedBy = "meeting")
     private List<Mate> mates = new ArrayList<>();
 
+    public Meeting(String name, LocalDate date, LocalTime time, Location target) {
+        this(null, name, target, date, TimeUtil.trimSecondsAndNanos(time), null, false, null);
+    }
 
     // 6자리 숫자로 구성된 초대 코드를 생성
     public void generateInviteCode() {
