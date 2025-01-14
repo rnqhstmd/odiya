@@ -21,7 +21,6 @@ public class MeetingResponse {
     @Getter
     @AllArgsConstructor
     public static class LocationDto {
-        private String placeName;
         private String address;
         private String latitude;
         private String longitude;
@@ -35,7 +34,6 @@ public class MeetingResponse {
                 meeting.getTime(),
                 meeting.getInviteCode(),
                 new LocationDto(
-                        meeting.getTarget().getPlaceName(),
                         meeting.getTarget().getAddress(),
                         meeting.getTarget().getCoordinates().getLatitude(),
                         meeting.getTarget().getCoordinates().getLongitude()

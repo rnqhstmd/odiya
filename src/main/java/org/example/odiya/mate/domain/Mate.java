@@ -3,6 +3,7 @@ package org.example.odiya.mate.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.odiya.common.domain.BaseEntity;
+import org.example.odiya.meeting.domain.Location;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.member.domain.Member;
 
@@ -10,7 +11,7 @@ import org.example.odiya.member.domain.Member;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Mate extends BaseEntity {
 
     @Id
@@ -25,8 +26,21 @@ public class Mate extends BaseEntity {
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 
+    @Embedded
+    private Location origin;
+
+    @Column
+    private long estimatedTime;
+
     public Mate(Member member, Meeting meeting) {
         this.member = member;
         this.meeting = meeting;
+    }
+
+    public Mate(Member member, Meeting meeting, Location origin, long estimatedTime) {
+        this.member = member;
+        this.meeting = meeting;
+        this.origin = origin;
+        this.estimatedTime = estimatedTime;
     }
 }

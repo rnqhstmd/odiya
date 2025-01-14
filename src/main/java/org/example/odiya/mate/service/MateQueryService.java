@@ -15,7 +15,7 @@ public class MateQueryService {
 
     private final MateRepository mateRepository;
 
-    public void isMateExist(Long memberId, Long meetingId) {
+    public void validateMateNotExists(Long memberId, Long meetingId) {
         if (mateRepository.existsByMemberIdAndMeetingId(memberId, meetingId)) {
             throw new ConflictException(DUPLICATION_MATE_ERROR);
         }

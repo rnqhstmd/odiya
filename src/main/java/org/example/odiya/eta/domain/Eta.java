@@ -27,22 +27,17 @@ public class Eta extends BaseEntity {
     @Column(nullable = false)
     private long remainingMinutes;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TransportType type;
-
     @Column(nullable = false)
     private boolean isMissing;
 
     @Column(nullable = false)
     private boolean isArrived;
 
-    public Eta(Mate mate, Long remainingMinutes, TransportType type) {
+    public Eta(Mate mate, long remainingMinute) {
         this(
                 null,
                 mate,
-                remainingMinutes,
-                type,
+                remainingMinute,
                 false,
                 false
         );

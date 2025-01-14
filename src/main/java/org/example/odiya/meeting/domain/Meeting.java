@@ -1,7 +1,6 @@
 package org.example.odiya.meeting.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.example.odiya.common.domain.BaseEntity;
@@ -28,6 +27,7 @@ public class Meeting extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Setter
     @Embedded
     private Location target;
 
@@ -40,6 +40,7 @@ public class Meeting extends BaseEntity {
     @Column(columnDefinition = "CHAR(6)", unique = true)
     private String inviteCode;
 
+    @Setter
     @Builder.Default
     @Column(nullable = false)
     private boolean overdue = false;
@@ -63,5 +64,9 @@ public class Meeting extends BaseEntity {
 
     public LocalDateTime getMeetingTime() {
         return TimeUtil.trimSecondsAndNanos(LocalDateTime.of(date, time));
+    }
+
+    public Coordinates getTargetCoordinates() {
+        return target.getCoordinates();
     }
 }

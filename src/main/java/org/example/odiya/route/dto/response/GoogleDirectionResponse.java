@@ -2,9 +2,11 @@ package org.example.odiya.route.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
 @Getter
 @NoArgsConstructor
 public class GoogleDirectionResponse {
@@ -13,6 +15,7 @@ public class GoogleDirectionResponse {
     private String status;
     private List<GeocodedWaypoint> geocodedWaypoints;
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class Route {
@@ -25,6 +28,7 @@ public class GoogleDirectionResponse {
         private List<Integer> waypointOrder;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class Leg {
@@ -37,6 +41,7 @@ public class GoogleDirectionResponse {
         private List<Step> steps;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class Step {
@@ -50,6 +55,7 @@ public class GoogleDirectionResponse {
         private TransitDetails transitDetails;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class GeocodedWaypoint {
@@ -58,6 +64,7 @@ public class GoogleDirectionResponse {
         private List<String> types;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class Bounds {
@@ -65,6 +72,7 @@ public class GoogleDirectionResponse {
         private Location southwest;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class Location {
@@ -72,6 +80,7 @@ public class GoogleDirectionResponse {
         private double lng;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class TextValue {
@@ -79,18 +88,21 @@ public class GoogleDirectionResponse {
         private Long value;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class OverviewPolyline {
         private String points;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class Polyline {
         private String points;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class TransitDetails {
@@ -101,6 +113,7 @@ public class GoogleDirectionResponse {
         private TextValue arrivalTime;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class Line {
@@ -109,6 +122,7 @@ public class GoogleDirectionResponse {
         private String vehicleType;
     }
 
+    @Setter
     @Getter
     @NoArgsConstructor
     public static class Stop {
