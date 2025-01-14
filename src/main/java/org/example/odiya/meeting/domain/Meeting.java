@@ -27,6 +27,7 @@ public class Meeting extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Setter
     @Embedded
     private Location target;
 
@@ -39,6 +40,7 @@ public class Meeting extends BaseEntity {
     @Column(columnDefinition = "CHAR(6)", unique = true)
     private String inviteCode;
 
+    @Setter
     @Builder.Default
     @Column(nullable = false)
     private boolean overdue = false;
