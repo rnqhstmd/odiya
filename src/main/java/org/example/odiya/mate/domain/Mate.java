@@ -11,7 +11,7 @@ import org.example.odiya.member.domain.Member;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Mate extends BaseEntity {
 
     @Id
