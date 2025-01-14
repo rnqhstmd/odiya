@@ -2,6 +2,7 @@ package org.example.odiya.mate.service;
 
 import org.example.odiya.common.exception.BadRequestException;
 import org.example.odiya.common.exception.ConflictException;
+import org.example.odiya.eta.service.EtaService;
 import org.example.odiya.mate.domain.Mate;
 import org.example.odiya.mate.dto.request.MateJoinRequest;
 import org.example.odiya.mate.dto.response.MateJoinResponse;
@@ -45,6 +46,9 @@ class MateServiceTest {
 
     @Mock
     private MateQueryService mateQueryService;
+
+    @Mock
+    private EtaService etaService;
 
     @Mock
     private MeetingQueryService meetingQueryService;
