@@ -1,6 +1,7 @@
 package org.example.odiya.mate.service;
 
 import org.example.odiya.common.exception.BadRequestException;
+import org.example.odiya.common.exception.ConflictException;
 import org.example.odiya.mate.domain.Mate;
 import org.example.odiya.mate.dto.request.MateJoinRequest;
 import org.example.odiya.mate.dto.response.MateJoinResponse;
@@ -26,7 +27,9 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.example.odiya.common.exception.type.ErrorType.DUPLICATION_MATE_ERROR;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 class MateServiceTest {
@@ -39,6 +42,9 @@ class MateServiceTest {
 
     @Mock
     private MeetingRepository meetingRepository;
+
+    @Mock
+    private MateQueryService mateQueryService;
 
     @Mock
     private MeetingQueryService meetingQueryService;
@@ -99,6 +105,23 @@ class MateServiceTest {
 
         assertThatThrownBy(() -> mateService.joinMeeting(member, request))
                 .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    @DisplayName("이미 참가한 사용자가 모임에 다시 참가하려고 하면 예외가 발생한다.")
+    void joinMeeting_AlreadyJoined() {
+        // Given
+        MateJoinRequest request = new MateJoinRequest("123456", "서울 강남구 테헤란로 411", "37.505713", "127.050691");
+
+        // When
+        when(meetingQueryService.findMeetingByInviteCode(request.getInviteCode())).thenReturn(meeting);
+        doThrow(new ConflictException(DUPLICATION_MATE_ERROR))
+                .when(mateQueryService)
+                .validateMateNotExists(member.getId(), meeting.getId());
+
+        // Then
+        assertThatThrownBy(() -> mateService.joinMeeting(member, request))
+                .isInstanceOf(ConflictException.class);
     }
 
     private GoogleDirectionResponse createMockGoogleResponse() {
