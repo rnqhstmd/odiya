@@ -28,18 +28,35 @@ public class MeetingCreateRequest {
     @NotNull(message = "약속 시간은 필수입니다")
     private LocalTime time;
 
-    @Schema(description = "장소 ID", example = "23444676")
+    @Schema(description = "목적지 ID", example = "23444676")
+    @NotNull(message = "목적지 ID는 필수입니다")
     private String placeId;
 
-    @Schema(description = "장소 이름", example = "롯데월드타워")
+    @Schema(description = "목적지 이름", example = "롯데월드타워")
+    @NotNull(message = "목적지 이름은 필수입니다")
     private String placeName;
 
-    @Schema(description = "주소", example = "서울 송파구 신천동 29")
-    private String address;
+    @Schema(description = "목적지 주소", example = "서울 송파구 신천동 29")
+    @NotNull(message = "목적지 주소는 필수입니다")
+    private String targetAddress;
 
     @Schema(description = "경도", example = "127.10255558658325")
-    private String longitude;
+    @NotNull(message = "목적지 경도는 필수입니다")
+    private String targetLongitude;
 
     @Schema(description = "위도", example = "37.51260447840551")
-    private String latitude;
+    @NotNull(message = "목적지 위도는 필수입니다")
+    private String targetLatitude;
+
+    @Schema(description = "출발지 주소", example = "서울 강남구 테헤란로 411")
+    @NotNull(message = "출발지 주소는 필수입니다")
+    private String originAddress;
+
+    @Schema(description = "출발지 위도", example = "37.505713")
+    @NotNull(message = "출발지 경도는 필수입니다")
+    private String originLatitude;
+
+    @Schema(description = "출발지 경도", example = "127.050691")
+    @NotNull(message = "출발지 경도는 필수입니다")
+    private String originLongitude;
 }
