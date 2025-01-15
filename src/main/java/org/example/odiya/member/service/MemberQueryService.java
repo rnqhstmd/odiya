@@ -24,9 +24,4 @@ public class MemberQueryService {
     public boolean existsByEmail(String email) {
         return memberRepository.existsByEmail(email);
     }
-
-    public Member findById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException(MEMBER_NOT_FOUND_ERROR));
-    }
 }
