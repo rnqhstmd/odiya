@@ -61,10 +61,13 @@ class MeetingServiceTest {
                 LocalDate.now(),
                 LocalTime.now(),
                 "111222333",
-                "Test Place",
-                "Test Address",
+                "dest Place",
+                "dest Address",
                 "37.5665",
-                "126.9780"
+                "126.9780",
+                "origin Place",
+                "126.9780",
+                "37.5665"
         );
     }
 
