@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 class OdiyaApplicationTests {
 
     @Test
-    public void contextLoads() throws Exception {
+    void contextLoads() {
     }
 
 }
