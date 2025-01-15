@@ -15,7 +15,7 @@ public class EtaService {
     private final EtaRepository etaRepository;
 
     @Transactional
-    public Eta saveFirstEtaOfMate(Mate mate, RouteTime routeTime) {
-        return etaRepository.save(new Eta(mate, routeTime.getMinutes()));
+    public void saveFirstEtaOfMate(Mate mate, RouteTime routeTime) {
+        etaRepository.save(new Eta(mate, routeTime.getMinutes()));
     }
 }
