@@ -1,7 +1,5 @@
 package org.example.odiya.meeting.service;
 
-import org.example.odiya.eta.service.EtaService;
-import org.example.odiya.mate.domain.Mate;
 import org.example.odiya.mate.service.MateQueryService;
 import org.example.odiya.mate.service.MateService;
 import org.example.odiya.meeting.domain.Coordinates;
@@ -13,9 +11,6 @@ import org.example.odiya.meeting.dto.response.MeetingDetailResponse;
 import org.example.odiya.meeting.dto.response.MeetingListResponse;
 import org.example.odiya.meeting.repository.MeetingRepository;
 import org.example.odiya.member.domain.Member;
-import org.example.odiya.member.repository.MemberRepository;
-import org.example.odiya.route.domain.RouteTime;
-import org.example.odiya.route.service.GoogleRouteClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
