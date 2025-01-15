@@ -1,7 +1,6 @@
 package org.example.odiya.meeting.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.odiya.mate.domain.Mate;
 import org.example.odiya.mate.service.MateQueryService;
 import org.example.odiya.mate.service.MateService;
 import org.example.odiya.meeting.domain.Coordinates;
@@ -29,24 +28,29 @@ public class MeetingService {
     private final MateQueryService mateQueryService;
 
     public MeetingCreateResponse createMeeting(Member member, MeetingCreateRequest request) {
-        Location location = new Location(
-                request.getAddress(),
-                new Coordinates(request.getLatitude(), request.getLongitude())
+        Location targetLocation = new Location(
+                request.getTargetAddress(),
+                new Coordinates(request.getTargetLatitude(), request.getTargetLongitude())
         );
 
         Meeting newMeeting = Meeting.builder()
                 .name(request.getName())
                 .date(request.getDate())
                 .time(request.getTime())
-                .target(location)
+                .target(targetLocation)
                 .build();
         newMeeting.generateInviteCode();
 
         Meeting savedMeeting = meetingRepository.save(newMeeting);
 
-        // 약속 생성자를 참가자로 등록
-        Mate mate = new Mate(member, savedMeeting);
-        mateService.saveMate(mate);
+        // 약속 생성자의 Mate 생성
+        mateService.createAndSaveMate(
+                member,
+                savedMeeting,
+                request.getOriginAddress(),
+                request.getOriginLatitude(),
+                request.getOriginLongitude()
+        );
 
         return MeetingCreateResponse.from(savedMeeting);
     }
