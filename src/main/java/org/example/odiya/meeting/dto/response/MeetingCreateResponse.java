@@ -9,7 +9,7 @@ import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor
-public class MeetingResponse {
+public class MeetingCreateResponse {
 
     private Long id;
     private String name;
@@ -26,8 +26,8 @@ public class MeetingResponse {
         private String longitude;
     }
 
-    public static MeetingResponse from(Meeting meeting) {
-        return new MeetingResponse(
+    public static MeetingCreateResponse from(Meeting meeting) {
+        return new MeetingCreateResponse(
                 meeting.getId(),
                 meeting.getName(),
                 meeting.getDate(),

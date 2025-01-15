@@ -5,7 +5,7 @@ import org.example.odiya.mate.service.MateQueryService;
 import org.example.odiya.mate.service.MateService;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.meeting.dto.request.MeetingCreateRequest;
-import org.example.odiya.meeting.dto.response.MeetingResponse;
+import org.example.odiya.meeting.dto.response.MeetingCreateResponse;
 import org.example.odiya.meeting.repository.MeetingRepository;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.repository.MemberRepository;
@@ -73,7 +73,7 @@ class MeetingServiceTest {
     void createMeeting_Success() {
         when(meetingRepository.save(any(Meeting.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        MeetingResponse response = meetingService.createMeeting(member, request);
+        MeetingCreateResponse response = meetingService.createMeeting(member, request);
 
         assertThat(response).isNotNull();
         assertThat(response.getName()).isEqualTo(request.getName());
