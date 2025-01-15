@@ -49,7 +49,6 @@ class AuthServiceTest {
         SigninRequest request = new SigninRequest("name", "email@example.com", "password");
         when(memberQueryService.existsByEmail(request.email())).thenReturn(false);
         when(passwordEncoder.encode(request.password())).thenReturn("encodedPassword");
-        when(memberQueryService.existsByInviteCode(anyString())).thenReturn(false);
 
         authService.signUp(request);
 

@@ -47,6 +47,7 @@ public enum ErrorType {
 
     // Mate
     DUPLICATION_MATE_ERROR("MATE_40900", "해당 약속에 이미 참여한 멤버입니다."),
+    NOT_PARTICIPATED_MATE_ERROR("MATE_40400", "해당 약속에 참여하지 않았습니다."),
 
     // Eta
     ETA_NOT_FOUND_ERROR("ETA_40400", "약속 참여자의 ETA 상태를 찾을 수 없습니다."),
