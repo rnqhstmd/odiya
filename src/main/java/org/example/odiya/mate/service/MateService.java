@@ -8,6 +8,7 @@ import org.example.odiya.mate.dto.request.MateJoinRequest;
 import org.example.odiya.mate.dto.response.MateJoinResponse;
 import org.example.odiya.mate.repository.MateRepository;
 import org.example.odiya.meeting.domain.Coordinates;
+import org.example.odiya.meeting.domain.Location;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.meeting.service.MeetingQueryService;
 import org.example.odiya.member.domain.Member;
@@ -45,16 +46,35 @@ public class MateService {
         // 이미 참가한 사용자인지 확인
         mateQueryService.validateMateNotExists(member.getId(), meeting.getId());
 
-        saveMateAndEta(member, meeting, request);
+        // Mate 생성 및 저장
+        createAndSaveMate(
+                member,
+                meeting,
+                request.getOriginAddress(),
+                request.getOriginLatitude(),
+                request.getOriginLongitude()
+        );
 
         return MateJoinResponse.from(meeting);
     }
 
-    private void saveMateAndEta(Member member, Meeting meeting, MateJoinRequest request) {
-        Coordinates origin = request.toCoordinates();
-        Coordinates target = meeting.getTargetCoordinates();
-        RouteTime routeTime = client.calculateRouteTime(origin, target);
-        Mate savedMate = mateRepository.save(request.toMate(meeting, member, routeTime.getMinutes()));
+    public void createAndSaveMate(Member member, Meeting meeting, String address, String latitude, String longitude) {
+        Location originLocation = new Location(
+                address,
+                new Coordinates(latitude, longitude)
+        );
+
+        Coordinates origin = new Coordinates(latitude, longitude);
+        RouteTime routeTime = client.calculateRouteTime(origin, meeting.getTargetCoordinates());
+
+        Mate mate = Mate.builder()
+                .member(member)
+                .meeting(meeting)
+                .origin(originLocation)
+                .estimatedTime(routeTime.getMinutes())
+                .build();
+
+        Mate savedMate = mateRepository.save(mate);
         etaService.saveFirstEtaOfMate(savedMate, routeTime);
     }
 }
