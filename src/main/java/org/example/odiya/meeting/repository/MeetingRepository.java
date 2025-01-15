@@ -13,8 +13,6 @@ import java.util.Optional;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
-    Optional<Meeting> findById(Long meetingId);
-
     Optional<Meeting> findByInviteCode(String inviteCode);
 
     @Query("UPDATE Meeting m SET m.overdue = true " +
