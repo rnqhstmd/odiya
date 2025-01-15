@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.example.odiya.common.exception.type.ErrorType.MEETING_NOT_FOUND_ERROR;
 
@@ -25,5 +26,14 @@ public class MeetingQueryService {
 
     public int updateOverdueMeetings(LocalDateTime now) {
         return meetingRepository.bulkUpdateOverdueStatus(now.toLocalDate(), now.toLocalTime());
+    }
+
+    public List<Meeting> findOverdueMeetings(Long memberId) {
+        return meetingRepository.findAllByMemberIdAndOverdueFalse(memberId);
+    }
+
+    public Meeting findMeetingsByMemberId(Long meetingId) {
+        return meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new NotFoundException(MEETING_NOT_FOUND_ERROR));
     }
 }
