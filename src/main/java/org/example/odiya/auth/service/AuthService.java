@@ -6,7 +6,6 @@ import org.example.odiya.auth.dto.request.SigninRequest;
 import org.example.odiya.auth.dto.response.LoginResponse;
 import org.example.odiya.common.exception.ConflictException;
 import org.example.odiya.common.exception.UnauthorizedException;
-import org.example.odiya.common.exception.type.ErrorType;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.service.MemberQueryService;
 import org.example.odiya.member.service.MemberService;
@@ -36,14 +35,6 @@ public class AuthService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .build();
-
-        // 초대코드 생성
-        newMember.generateInviteCode();
-
-        // 초대코드 중복 검증
-        while (memberQueryService.existsByInviteCode(newMember.getInviteCode())) {
-            newMember.generateInviteCode();
-        }
 
         memberService.saveMember(newMember);
     }

@@ -2,7 +2,6 @@ package org.example.odiya.member.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.example.odiya.common.domain.BaseEntity;
 import org.example.odiya.mate.domain.Mate;
 
@@ -29,18 +28,10 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column
-    private String inviteCode;
-
     @Embedded
     private DeviceToken deviceToken;
 
     @OneToMany(mappedBy = "member")
     @Builder.Default
     private List<Mate> mates = new ArrayList<>();
-
-    // 6자리 숫자로 구성된 초대 코드를 생성
-    public void generateInviteCode() {
-        this.inviteCode = RandomStringUtils.randomNumeric(6);
-    }
 }
