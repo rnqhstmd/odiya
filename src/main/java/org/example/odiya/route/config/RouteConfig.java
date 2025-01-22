@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(RouteClientProperty.class)
+@EnableConfigurationProperties(RouteClientProperties.class)
 public class RouteConfig {
 }
