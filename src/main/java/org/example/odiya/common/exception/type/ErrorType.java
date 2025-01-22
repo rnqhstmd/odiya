@@ -60,6 +60,7 @@ public enum ErrorType {
     // Internal Server
     INTERNAL_SERVER_ERROR("INTERNAL_50000", "서버 내부 에러입니다."),
     EXTERNAL_API_ERROR("INTERNAL_50001", "외부 API 호출 에러입니다."),
+    REST_TEMPLATE_ERROR("INTERNAL_50002", "RestTemplate 에러입니다."),
     TOO_MANY_REQUEST_ERROR("INTERNAL_50002", "API 호출 한도를 초과했습니다."),
 
     // Validation
