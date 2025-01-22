@@ -53,7 +53,7 @@ public class GoogleRouteClient implements RouteClient {
         } catch (RestClientException e) {
             log.error("Google Directions API 호출 실패", e);
             throw new InternalServerException(
-                    ErrorType.EXTERNAL_API_ERROR,
+                    ErrorType.REST_TEMPLATE_ERROR,
                     "Google API 호출 중 오류가 발생했습니다." + e.getMessage()
             );
         } catch (Exception e) {
@@ -77,7 +77,8 @@ public class GoogleRouteClient implements RouteClient {
 
     private void checkWarnings(GoogleDirectionResponse response) {
         if (!response.getRoutes().isEmpty() &&
-                response.getRoutes().get(0).getWarnings() != null) {
+                response.getRoutes().get(0).getWarnings() !=
+                        null) {
             response.getRoutes().get(0).getWarnings()
                     .forEach(warning -> log.warn("도보 경로 경고: {}", warning));
         }

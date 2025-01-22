@@ -63,7 +63,7 @@ public class PlaceService {
 
         } catch (RestClientException e) {
             log.error("카카오 API 호출 중 오류 발생", e);
-            throw new InternalServerException(EXTERNAL_API_ERROR, "카카오 API 응답이 null입니다. "+e.getMessage());
+            throw new InternalServerException(REST_TEMPLATE_ERROR, "카카오 API 응답이 null입니다. "+e.getMessage());
         }
     }
 }
