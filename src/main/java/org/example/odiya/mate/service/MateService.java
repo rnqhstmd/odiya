@@ -30,10 +30,6 @@ public class MateService {
     private final GoogleRouteClient client;
     private final EtaService etaService;
 
-    public void saveMate(Mate mate) {
-        mateRepository.save(mate);
-    }
-
     public MateJoinResponse joinMeeting(Member member, MateJoinRequest request) {
         // inviteCode 로 약속 찾기
         Meeting meeting = meetingQueryService.findMeetingByInviteCode(request.getInviteCode());
