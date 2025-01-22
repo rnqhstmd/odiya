@@ -6,6 +6,7 @@ import java.util.function.UnaryOperator;
 public enum ClientType {
 
     GOOGLE(date -> date.withDayOfMonth(1)),
+    TMAP(date -> date.withDayOfMonth(1))
     ;
 
     private final UnaryOperator<LocalDate> resetDateOperation;
