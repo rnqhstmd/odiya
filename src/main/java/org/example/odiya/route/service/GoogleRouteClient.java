@@ -80,7 +80,7 @@ public class GoogleRouteClient implements RouteClient {
                 response.getRoutes().get(0).getWarnings() !=
                         null) {
             response.getRoutes().get(0).getWarnings()
-                    .forEach(warning -> log.warn("도보 경로 경고: {}", warning));
+                    .forEach(warning -> log.warn("구글 경로 경고: {}", warning));
         }
     }
 
