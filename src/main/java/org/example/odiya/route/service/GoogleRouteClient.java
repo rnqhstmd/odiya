@@ -7,7 +7,7 @@ import org.example.odiya.common.exception.type.ErrorType;
 import org.example.odiya.meeting.domain.Coordinates;
 import org.example.odiya.route.config.RouteClientProperties;
 import org.example.odiya.route.domain.ClientType;
-import org.example.odiya.route.domain.RouteTime;
+import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.dto.response.GoogleDirectionResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -16,8 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
 
-import static org.example.odiya.common.constant.Constants.MODE_TRANSIT;
-import static org.example.odiya.common.constant.Constants.STATUS_OK;
 import static org.example.odiya.common.exception.type.ErrorType.*;
 
 @Slf4j
@@ -27,6 +25,9 @@ public class GoogleRouteClient implements RouteClient {
 
     private final RestTemplate restTemplate;
     private final RouteClientProperties properties;
+
+    private static final String MODE_TRANSIT = "transit";
+    private static final String STATUS_OK = "OK";
 
     private GoogleDirectionResponse getDirectionsResponse(Coordinates origin, Coordinates target) {
         String url = buildDirectionsUrl(origin, target);
@@ -44,7 +45,7 @@ public class GoogleRouteClient implements RouteClient {
     }
 
     @Override
-    public RouteTime calculateRouteTime(Coordinates origin, Coordinates target) {
+    public RouteInfo calculateRouteTime(Coordinates origin, Coordinates target) {
         try {
             GoogleDirectionResponse response = getDirectionsResponse(origin, target);
             validateResponse(response);
@@ -88,18 +89,19 @@ public class GoogleRouteClient implements RouteClient {
         return String.format("%s,%s", coordinates.getLatitude(), coordinates.getLongitude());
     }
 
-    private RouteTime convertToRouteTime(GoogleDirectionResponse response) {
+    private RouteInfo convertToRouteTime(GoogleDirectionResponse response) {
         GoogleDirectionResponse.Route route = response.getRoutes().get(0);
         GoogleDirectionResponse.Leg leg = route.getLegs().get(0);
 
         long durationSeconds = leg.getDuration().getValue();
         long durationMinutes = Duration.ofSeconds(durationSeconds).toMinutes();
+        long distance = leg.getDistance().getValue();
 
         if (durationMinutes <= 1) {
-            return RouteTime.CLOSEST_EXCEPTION_TIME;
+            return RouteInfo.CLOSEST_EXCEPTION_TIME;
         }
 
-        return new RouteTime(durationMinutes);
+        return new RouteInfo(durationMinutes, distance);
     }
 
     @Override

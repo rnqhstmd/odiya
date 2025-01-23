@@ -7,12 +7,13 @@ import java.util.Objects;
 
 @Getter
 @RequiredArgsConstructor
-public class RouteTime {
+public class RouteInfo {
 
-    public static final RouteTime CLOSEST_EXCEPTION_TIME = new RouteTime(-1L);
-    public static final RouteTime ZERO = new RouteTime(0L);
+    public static final RouteInfo CLOSEST_EXCEPTION_TIME = new RouteInfo(-1L, 0L);
+    public static final RouteInfo ZERO = new RouteInfo(0L, 0L);
 
     private final long minutes;
+    private final long distance;
 
     @Override
     public boolean equals(Object o) {
@@ -22,12 +23,12 @@ public class RouteTime {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        RouteTime routeTime = (RouteTime) o;
-        return getMinutes() == routeTime.getMinutes();
+        RouteInfo routeInfo = (RouteInfo) o;
+        return getMinutes() == routeInfo.getMinutes() && getDistance() == routeInfo.getDistance();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getMinutes());
+        return Objects.hash(minutes, distance);
     }
 }

@@ -12,8 +12,7 @@ import org.example.odiya.meeting.domain.Location;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.meeting.service.MeetingQueryService;
 import org.example.odiya.member.domain.Member;
-import org.example.odiya.route.domain.RouteTime;
-import org.example.odiya.route.service.GoogleRouteClient;
+import org.example.odiya.route.service.RouteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +26,8 @@ public class MateService {
     private final MateRepository mateRepository;
     private final MateQueryService mateQueryService;
     private final MeetingQueryService meetingQueryService;
-    private final GoogleRouteClient client;
+    private final RouteService routeService;
     private final EtaService etaService;
-
-    public void saveMate(Mate mate) {
-        mateRepository.save(mate);
-    }
 
     public MateJoinResponse joinMeeting(Member member, MateJoinRequest request) {
         // inviteCode 로 약속 찾기
@@ -64,17 +59,16 @@ public class MateService {
                 new Coordinates(latitude, longitude)
         );
 
-        Coordinates origin = new Coordinates(latitude, longitude);
-        RouteTime routeTime = client.calculateRouteTime(origin, meeting.getTargetCoordinates());
+        long estimatedTime = routeService.calculateOptimalRoute(originLocation.getCoordinates(), meeting.getTargetCoordinates());
 
         Mate mate = Mate.builder()
                 .member(member)
                 .meeting(meeting)
                 .origin(originLocation)
-                .estimatedTime(routeTime.getMinutes())
+                .estimatedTime(estimatedTime)
                 .build();
 
         Mate savedMate = mateRepository.save(mate);
-        etaService.saveFirstEtaOfMate(savedMate, routeTime);
+        etaService.saveFirstEtaOfMate(savedMate, estimatedTime);
     }
 }

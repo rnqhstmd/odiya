@@ -6,7 +6,7 @@ import org.example.odiya.common.exception.InternalServerException;
 import org.example.odiya.meeting.domain.Coordinates;
 import org.example.odiya.route.config.RouteClientProperties;
 import org.example.odiya.route.domain.ClientType;
-import org.example.odiya.route.domain.RouteTime;
+import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.dto.response.TmapDirectionResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.Duration;
 import java.util.Optional;
 
-import static org.example.odiya.common.constant.Constants.*;
 import static org.example.odiya.common.exception.type.ErrorType.INTERNAL_SERVER_ERROR;
 import static org.example.odiya.common.exception.type.ErrorType.REST_TEMPLATE_ERROR;
 
@@ -30,6 +29,11 @@ public class TmapRouteClient implements RouteClient {
 
     private final RestTemplate restTemplate;
     private final RouteClientProperties properties;
+
+    private static final String VERSION = "1";
+    private static final String COORD_TYPE = "WGS84GEO";
+    private static final String SEARCH_OPTION = "0";
+    private static final String SORT = "index";
 
     private TmapDirectionResponse getDirectionsResponse(Coordinates origin, Coordinates target) {
         HttpHeaders headers = createHeaders();
@@ -66,7 +70,7 @@ public class TmapRouteClient implements RouteClient {
     }
 
     @Override
-    public RouteTime calculateRouteTime(Coordinates origin, Coordinates target) {
+    public RouteInfo calculateRouteTime(Coordinates origin, Coordinates target) {
         try {
             TmapDirectionResponse response = getDirectionsResponse(origin, target);
             validateResponse(response);
@@ -95,23 +99,24 @@ public class TmapRouteClient implements RouteClient {
         }
     }
 
-    private RouteTime convertToRouteTime(TmapDirectionResponse response) {
+    private RouteInfo convertToRouteTime(TmapDirectionResponse response) {
         Optional<TmapDirectionResponse.Feature> routeFeature = response.getFeatures().stream()
                 .filter(feature -> feature.getProperties().getTotalTime() != null)
                 .findFirst();
 
         if (routeFeature.isEmpty()) {
-            return RouteTime.ZERO;
+            return RouteInfo.ZERO;
         }
 
         int totalSeconds = routeFeature.get().getProperties().getTotalTime();
         long durationMinutes = Duration.ofSeconds(totalSeconds).toMinutes();
+        long distance = routeFeature.get().getProperties().getTotalDistance();
 
         if (durationMinutes <= 1) {
-            return RouteTime.CLOSEST_EXCEPTION_TIME;
+            return RouteInfo.CLOSEST_EXCEPTION_TIME;
         }
 
-        return new RouteTime(durationMinutes);
+        return new RouteInfo(durationMinutes, distance);
     }
 
     @Override

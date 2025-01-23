@@ -127,7 +127,7 @@ class MeetingServiceTest {
     void getMeetingDetail_Success() {
         // given
         Long meetingId = 1L;
-        when(meetingQueryService.findMeetingsByMemberId(meetingId)).thenReturn(meeting);
+        when(meetingQueryService.findById(meetingId)).thenReturn(meeting);
 
         // when
         MeetingDetailResponse response = meetingService.getMeetingDetail(member, meetingId);
@@ -135,7 +135,7 @@ class MeetingServiceTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.getName()).isEqualTo(meeting.getName());
-        verify(meetingQueryService, times(1)).findMeetingsByMemberId(meetingId);
+        verify(meetingQueryService, times(1)).findById(meetingId);
         verify(mateQueryService, times(1)).validateMateExists(member.getId(), meetingId);
     }
 }
