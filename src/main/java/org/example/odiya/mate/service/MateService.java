@@ -14,6 +14,7 @@ import org.example.odiya.meeting.service.MeetingQueryService;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.service.GoogleRouteClient;
+import org.example.odiya.route.service.TmapRouteClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ public class MateService {
     private final MateQueryService mateQueryService;
     private final MeetingQueryService meetingQueryService;
     private final GoogleRouteClient googleRouteClient;
+    private final TmapRouteClient tmapRouteClient;
     private final EtaService etaService;
 
     public MateJoinResponse joinMeeting(Member member, MateJoinRequest request) {
@@ -61,8 +63,7 @@ public class MateService {
                 new Coordinates(latitude, longitude)
         );
 
-        Coordinates origin = new Coordinates(latitude, longitude);
-        RouteInfo routeInfo = googleRouteClient.calculateRouteTime(origin, meeting.getTargetCoordinates());
+        RouteInfo routeInfo = calculateOptimalRoute(originLocation.getCoordinates(), meeting.getTargetCoordinates());
 
         Mate mate = Mate.builder()
                 .member(member)
