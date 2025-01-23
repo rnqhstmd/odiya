@@ -12,13 +12,10 @@ import org.example.odiya.meeting.domain.Location;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.meeting.service.MeetingQueryService;
 import org.example.odiya.member.domain.Member;
-import org.example.odiya.route.domain.RouteInfo;
-import org.example.odiya.route.service.GoogleRouteClient;
-import org.example.odiya.route.service.TmapRouteClient;
+import org.example.odiya.route.service.RouteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.example.odiya.common.constant.Constants.WALKING_THRESHOLD;
 import static org.example.odiya.common.exception.type.ErrorType.MEETING_OVERDUE_ERROR;
 
 @Service
@@ -29,8 +26,7 @@ public class MateService {
     private final MateRepository mateRepository;
     private final MateQueryService mateQueryService;
     private final MeetingQueryService meetingQueryService;
-    private final GoogleRouteClient googleRouteClient;
-    private final TmapRouteClient tmapRouteClient;
+    private final RouteService routeService;
     private final EtaService etaService;
 
     public MateJoinResponse joinMeeting(Member member, MateJoinRequest request) {
@@ -63,27 +59,16 @@ public class MateService {
                 new Coordinates(latitude, longitude)
         );
 
-        RouteInfo routeInfo = calculateOptimalRoute(originLocation.getCoordinates(), meeting.getTargetCoordinates());
+        long estimatedTime = routeService.calculateOptimalRoute(originLocation.getCoordinates(), meeting.getTargetCoordinates());
 
         Mate mate = Mate.builder()
                 .member(member)
                 .meeting(meeting)
                 .origin(originLocation)
-                .estimatedTime(routeInfo.getMinutes())
+                .estimatedTime(estimatedTime)
                 .build();
 
         Mate savedMate = mateRepository.save(mate);
-        etaService.saveFirstEtaOfMate(savedMate, routeInfo);
-    }
-
-    private RouteInfo calculateOptimalRoute(Coordinates origin, Coordinates target) {
-        RouteInfo transitTime = googleRouteClient.calculateRouteTime(origin, target);
-
-        if (transitTime.getDistance() <= WALKING_THRESHOLD) {
-            RouteInfo walkingTime = tmapRouteClient.calculateRouteTime(origin, target);
-            return transitTime.getMinutes() <= walkingTime.getMinutes() ? transitTime : walkingTime;
-        }
-
-        return transitTime;
+        etaService.saveFirstEtaOfMate(savedMate, estimatedTime);
     }
 }
