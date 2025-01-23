@@ -95,12 +95,13 @@ public class GoogleRouteClient implements RouteClient {
 
         long durationSeconds = leg.getDuration().getValue();
         long durationMinutes = Duration.ofSeconds(durationSeconds).toMinutes();
+        long distance = leg.getDistance().getValue();
 
         if (durationMinutes <= 1) {
             return RouteInfo.CLOSEST_EXCEPTION_TIME;
         }
 
-        return new RouteInfo(durationMinutes);
+        return new RouteInfo(durationMinutes, distance);
     }
 
     @Override

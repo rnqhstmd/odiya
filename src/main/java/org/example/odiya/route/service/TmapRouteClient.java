@@ -110,12 +110,13 @@ public class TmapRouteClient implements RouteClient {
 
         int totalSeconds = routeFeature.get().getProperties().getTotalTime();
         long durationMinutes = Duration.ofSeconds(totalSeconds).toMinutes();
+        long distance = routeFeature.get().getProperties().getTotalDistance();
 
         if (durationMinutes <= 1) {
             return RouteInfo.CLOSEST_EXCEPTION_TIME;
         }
 
-        return new RouteInfo(durationMinutes);
+        return new RouteInfo(durationMinutes, distance);
     }
 
     @Override
