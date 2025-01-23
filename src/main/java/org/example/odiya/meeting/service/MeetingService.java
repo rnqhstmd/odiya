@@ -62,7 +62,7 @@ public class MeetingService {
     }
 
     public MeetingDetailResponse getMeetingDetail(Member member, Long meetingId) {
-        Meeting meeting = meetingQueryService.findMeetingsByMemberId(meetingId);
+        Meeting meeting = meetingQueryService.findById(meetingId);
         mateQueryService.validateMateExists(member.getId(), meetingId);
         return MeetingDetailResponse.from(meeting);
     }
