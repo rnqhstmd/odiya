@@ -32,7 +32,7 @@ public class MeetingQueryService {
         return meetingRepository.findAllByMemberIdAndOverdueFalse(memberId);
     }
 
-    public Meeting findMeetingsByMemberId(Long meetingId) {
+    public Meeting findById(Long meetingId) {
         return meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new NotFoundException(MEETING_NOT_FOUND_ERROR));
     }
