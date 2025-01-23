@@ -44,13 +44,14 @@ public enum ErrorType {
     MEETING_NOT_FOUND_ERROR("MEETING_40400", "해당 약속을 찾을 수 없습니다."),
     MEETING_OVERDUE_ERROR("MEETING_40401", "해당 약속은 이미 종료되었습니다."),
     NO_DATE_AND_TIME_ERROR("MEETING_40402", "설정된 약속 시간이 없습니다."),
+    NOT_ONE_HOUR_BEFORE_MEETING_ERROR("MEETING_40000", "설정된 약속 시간보다 1시간 전이 아닙니다."),
 
     // Mate
     DUPLICATION_MATE_ERROR("MATE_40900", "해당 약속에 이미 참여한 멤버입니다."),
     NOT_PARTICIPATED_MATE_ERROR("MATE_40400", "해당 약속에 참여하지 않았습니다."),
 
     // Eta
-    ETA_NOT_FOUND_ERROR("ETA_40400", "약속 참여자의 ETA 상태를 찾을 수 없습니다."),
+    MATE_ETA_NOT_FOUND_ERROR("ETA_40400", "약속 참여자의 ETA 상태를 찾을 수 없습니다."),
 
     // Route
     SEARCH_ROUTE_NOT_FOUND_ERROR("ROUTE_40400", "도보 경로를 찾을 수 없습니다."),
