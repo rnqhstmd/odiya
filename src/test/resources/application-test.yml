@@ -37,7 +37,8 @@ kakao:
     address-search-path: /v2/local/search/address.json
     category-search-path: /v2/local/search/category.json
 
-google:
-  api:
-    key: ${GOOGLE_API_KEY}
-    url: https://maps.googleapis.com/maps/api/directions/json
+route:
+  google:
+    api:
+      key: ${GOOGLE_API_KEY}
+      url: https://maps.googleapis.com/maps/api/directions/json

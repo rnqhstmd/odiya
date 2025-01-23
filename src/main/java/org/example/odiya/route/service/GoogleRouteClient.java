@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.odiya.common.exception.InternalServerException;
 import org.example.odiya.common.exception.type.ErrorType;
 import org.example.odiya.meeting.domain.Coordinates;
-import org.example.odiya.route.config.RouteClientProperty;
+import org.example.odiya.route.config.RouteClientProperties;
 import org.example.odiya.route.domain.ClientType;
 import org.example.odiya.route.domain.RouteTime;
 import org.example.odiya.route.dto.response.GoogleDirectionResponse;
@@ -26,7 +26,7 @@ import static org.example.odiya.common.exception.type.ErrorType.*;
 public class GoogleRouteClient implements RouteClient {
 
     private final RestTemplate restTemplate;
-    private final RouteClientProperty properties;
+    private final RouteClientProperties properties;
 
     private GoogleDirectionResponse getDirectionsResponse(Coordinates origin, Coordinates target) {
         String url = buildDirectionsUrl(origin, target);
@@ -34,11 +34,11 @@ public class GoogleRouteClient implements RouteClient {
     }
 
     private String buildDirectionsUrl(Coordinates origin, Coordinates target) {
-        return UriComponentsBuilder.fromHttpUrl(properties.getUrl())
+        return UriComponentsBuilder.fromHttpUrl(properties.getGoogle().url())
                 .queryParam("origin", formatCoordinate(origin))
                 .queryParam("destination", formatCoordinate(target))
                 .queryParam("mode", MODE_TRANSIT)
-                .queryParam("key", properties.getKey())
+                .queryParam("key", properties.getGoogle().key())
                 .build()
                 .toUriString();
     }
@@ -53,7 +53,7 @@ public class GoogleRouteClient implements RouteClient {
         } catch (RestClientException e) {
             log.error("Google Directions API 호출 실패", e);
             throw new InternalServerException(
-                    ErrorType.EXTERNAL_API_ERROR,
+                    ErrorType.REST_TEMPLATE_ERROR,
                     "Google API 호출 중 오류가 발생했습니다." + e.getMessage()
             );
         } catch (Exception e) {
@@ -77,9 +77,10 @@ public class GoogleRouteClient implements RouteClient {
 
     private void checkWarnings(GoogleDirectionResponse response) {
         if (!response.getRoutes().isEmpty() &&
-                response.getRoutes().get(0).getWarnings() != null) {
+                response.getRoutes().get(0).getWarnings() !=
+                        null) {
             response.getRoutes().get(0).getWarnings()
-                    .forEach(warning -> log.warn("도보 경로 경고: {}", warning));
+                    .forEach(warning -> log.warn("구글 경로 경고: {}", warning));
         }
     }
 
