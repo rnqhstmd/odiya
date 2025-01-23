@@ -6,7 +6,7 @@ import org.example.odiya.common.exception.InternalServerException;
 import org.example.odiya.meeting.domain.Coordinates;
 import org.example.odiya.route.config.RouteClientProperties;
 import org.example.odiya.route.domain.ClientType;
-import org.example.odiya.route.domain.RouteTime;
+import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.dto.response.TmapDirectionResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -70,7 +70,7 @@ public class TmapRouteClient implements RouteClient {
     }
 
     @Override
-    public RouteTime calculateRouteTime(Coordinates origin, Coordinates target) {
+    public RouteInfo calculateRouteTime(Coordinates origin, Coordinates target) {
         try {
             TmapDirectionResponse response = getDirectionsResponse(origin, target);
             validateResponse(response);
@@ -99,23 +99,23 @@ public class TmapRouteClient implements RouteClient {
         }
     }
 
-    private RouteTime convertToRouteTime(TmapDirectionResponse response) {
+    private RouteInfo convertToRouteTime(TmapDirectionResponse response) {
         Optional<TmapDirectionResponse.Feature> routeFeature = response.getFeatures().stream()
                 .filter(feature -> feature.getProperties().getTotalTime() != null)
                 .findFirst();
 
         if (routeFeature.isEmpty()) {
-            return RouteTime.ZERO;
+            return RouteInfo.ZERO;
         }
 
         int totalSeconds = routeFeature.get().getProperties().getTotalTime();
         long durationMinutes = Duration.ofSeconds(totalSeconds).toMinutes();
 
         if (durationMinutes <= 1) {
-            return RouteTime.CLOSEST_EXCEPTION_TIME;
+            return RouteInfo.CLOSEST_EXCEPTION_TIME;
         }
 
-        return new RouteTime(durationMinutes);
+        return new RouteInfo(durationMinutes);
     }
 
     @Override

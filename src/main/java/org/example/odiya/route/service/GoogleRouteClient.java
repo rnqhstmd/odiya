@@ -7,7 +7,7 @@ import org.example.odiya.common.exception.type.ErrorType;
 import org.example.odiya.meeting.domain.Coordinates;
 import org.example.odiya.route.config.RouteClientProperties;
 import org.example.odiya.route.domain.ClientType;
-import org.example.odiya.route.domain.RouteTime;
+import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.dto.response.GoogleDirectionResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -45,7 +45,7 @@ public class GoogleRouteClient implements RouteClient {
     }
 
     @Override
-    public RouteTime calculateRouteTime(Coordinates origin, Coordinates target) {
+    public RouteInfo calculateRouteTime(Coordinates origin, Coordinates target) {
         try {
             GoogleDirectionResponse response = getDirectionsResponse(origin, target);
             validateResponse(response);
@@ -89,7 +89,7 @@ public class GoogleRouteClient implements RouteClient {
         return String.format("%s,%s", coordinates.getLatitude(), coordinates.getLongitude());
     }
 
-    private RouteTime convertToRouteTime(GoogleDirectionResponse response) {
+    private RouteInfo convertToRouteTime(GoogleDirectionResponse response) {
         GoogleDirectionResponse.Route route = response.getRoutes().get(0);
         GoogleDirectionResponse.Leg leg = route.getLegs().get(0);
 
@@ -97,10 +97,10 @@ public class GoogleRouteClient implements RouteClient {
         long durationMinutes = Duration.ofSeconds(durationSeconds).toMinutes();
 
         if (durationMinutes <= 1) {
-            return RouteTime.CLOSEST_EXCEPTION_TIME;
+            return RouteInfo.CLOSEST_EXCEPTION_TIME;
         }
 
-        return new RouteTime(durationMinutes);
+        return new RouteInfo(durationMinutes);
     }
 
     @Override
