@@ -16,4 +16,6 @@ public class Constants {
             "/h2-console/**",
             "/api/auth/**"
     };
+
+    public static final int WALKING_THRESHOLD = 1000;
 }
