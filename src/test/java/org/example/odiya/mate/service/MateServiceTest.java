@@ -17,6 +17,7 @@ import org.example.odiya.member.repository.MemberRepository;
 import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.dto.response.GoogleDirectionResponse;
 import org.example.odiya.route.service.GoogleRouteClient;
+import org.example.odiya.route.service.RouteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,9 @@ class MateServiceTest {
 
     @Mock
     private EtaService etaService;
+
+    @Mock
+    private RouteService routeService;
 
     @Mock
     private MeetingQueryService meetingQueryService;
@@ -142,6 +146,11 @@ class MateServiceTest {
         duration.setText("4 mins");
         duration.setValue(256L); // 256초 = 약 4분
         leg.setDuration(duration);
+
+        GoogleDirectionResponse.TextValue distance = new GoogleDirectionResponse.TextValue();
+        distance.setText("1 km");
+        distance.setValue(1000L); // 1000미터 = 1킬로미터
+        leg.setDistance(distance);
 
         // Location 설정
         GoogleDirectionResponse.Location startLocation = new GoogleDirectionResponse.Location();
