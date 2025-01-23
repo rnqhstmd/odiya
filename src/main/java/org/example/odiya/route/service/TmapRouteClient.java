@@ -19,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.Duration;
 import java.util.Optional;
 
-import static org.example.odiya.common.constant.Constants.*;
 import static org.example.odiya.common.exception.type.ErrorType.INTERNAL_SERVER_ERROR;
 import static org.example.odiya.common.exception.type.ErrorType.REST_TEMPLATE_ERROR;
 
@@ -30,6 +29,11 @@ public class TmapRouteClient implements RouteClient {
 
     private final RestTemplate restTemplate;
     private final RouteClientProperties properties;
+
+    private static final String VERSION = "1";
+    private static final String COORD_TYPE = "WGS84GEO";
+    private static final String SEARCH_OPTION = "0";
+    private static final String SORT = "index";
 
     private TmapDirectionResponse getDirectionsResponse(Coordinates origin, Coordinates target) {
         HttpHeaders headers = createHeaders();

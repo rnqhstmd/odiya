@@ -16,8 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
 
-import static org.example.odiya.common.constant.Constants.MODE_TRANSIT;
-import static org.example.odiya.common.constant.Constants.STATUS_OK;
 import static org.example.odiya.common.exception.type.ErrorType.*;
 
 @Slf4j
@@ -27,6 +25,9 @@ public class GoogleRouteClient implements RouteClient {
 
     private final RestTemplate restTemplate;
     private final RouteClientProperties properties;
+
+    private static final String MODE_TRANSIT = "transit";
+    private static final String STATUS_OK = "OK";
 
     private GoogleDirectionResponse getDirectionsResponse(Coordinates origin, Coordinates target) {
         String url = buildDirectionsUrl(origin, target);
