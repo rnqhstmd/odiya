@@ -14,7 +14,7 @@ import org.example.odiya.meeting.repository.MeetingRepository;
 import org.example.odiya.meeting.service.MeetingQueryService;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.repository.MemberRepository;
-import org.example.odiya.route.domain.RouteTime;
+import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.dto.response.GoogleDirectionResponse;
 import org.example.odiya.route.service.GoogleRouteClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,13 +85,15 @@ class MateServiceTest {
 
         // Mock GoogleDirectionResponse 생성
         GoogleDirectionResponse mockResponse = createMockGoogleResponse();
-        RouteTime routeTime = new RouteTime(mockResponse.getRoutes().get(0).getLegs().get(0).getDuration().getValue() / 60);
+        RouteInfo routeInfo = new RouteInfo(
+                mockResponse.getRoutes().get(0).getLegs().get(0).getDuration().getValue() / 60,
+                mockResponse.getRoutes().get(0).getLegs().get(0).getDistance().getValue());
 
         // Mock 설정
         when(meetingQueryService.findMeetingByInviteCode(request.getInviteCode())).thenReturn(meeting);
-        when(client.calculateRouteTime(any(Coordinates.class), any(Coordinates.class))).thenReturn(routeTime);
+        when(client.calculateRouteTime(any(Coordinates.class), any(Coordinates.class))).thenReturn(routeInfo);
 
-        Mate mate = request.toMate(meeting, member, routeTime.getMinutes());
+        Mate mate = request.toMate(meeting, member, routeInfo.getMinutes());
         when(mateRepository.save(any(Mate.class))).thenReturn(mate);
 
         MateJoinResponse response = mateService.joinMeeting(member, request);
