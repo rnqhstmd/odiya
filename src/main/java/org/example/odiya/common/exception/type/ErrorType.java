@@ -21,7 +21,6 @@ public enum ErrorType {
     // Auth
     NO_AUTHORIZATION_ERROR("AUTH_40100", "인증이 없는 사용자입니다."),
     PASSWORD_NOT_MATCH_ERROR("AUTH_40101", "이메일 또는 비밀번호가 일치하지 않습니다."),
-    ACCESS_DENIED_ERROR("AUTH_40300", "접근 권한이 없습니다."),
 
     // Resource
     NO_RESOURCE_ERROR("RESOURCE_40000", "해당 리소스를 찾을 수 없습니다."),
@@ -54,7 +53,7 @@ public enum ErrorType {
     MATE_ETA_NOT_FOUND_ERROR("ETA_40400", "약속 참여자의 ETA 상태를 찾을 수 없습니다."),
 
     // Route
-    SEARCH_ROUTE_NOT_FOUND_ERROR("ROUTE_40400", "도보 경로를 찾을 수 없습니다."),
+    SEARCH_ROUTE_NOT_FOUND_ERROR("ROUTE_40400", "경로를 찾을 수 없습니다."),
     INVALID_ROUTE_REQUEST_ERROR("ROUTE_40000", "경로 요청이 잘못되었습니다."),
     REQUEST_DENIED_ERROR("ROUTE_40003", "요청이 거부되었습니다."),
 
