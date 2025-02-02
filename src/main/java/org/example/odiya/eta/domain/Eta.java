@@ -47,6 +47,10 @@ public class Eta extends BaseEntity {
         this.remainingMinutes = remainingMinutes;
     }
 
+    public void markAsMissing() {
+        this.isMissing = true;
+    }
+
     public void markAsArrived() {
         this.isArrived = true;
     }
