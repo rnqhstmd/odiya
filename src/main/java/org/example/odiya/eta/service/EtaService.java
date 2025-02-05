@@ -69,7 +69,7 @@ public class EtaService {
 
     public List<Eta> filterUpdatableEtas(List<Eta> etas) {
         return etas.stream()
-                .filter(eta -> !eta.isArrived() && !eta.isMissing())
+                .filter(eta -> !eta.isArrived())
                 .toList();
     }
 
