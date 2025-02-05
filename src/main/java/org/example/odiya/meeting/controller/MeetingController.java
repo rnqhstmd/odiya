@@ -59,7 +59,7 @@ public class MeetingController {
     public ResponseEntity<Void> updateMeetingEta(
             @AuthMember Member member,
             @PathVariable("id") Long meetingId) {
-        etaService.updateEtaOfMate(meetingId, member.getId());
+        meetingService.updateEtaForMeetingMates(meetingId, member.getId());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
