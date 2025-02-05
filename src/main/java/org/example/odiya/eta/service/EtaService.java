@@ -2,30 +2,27 @@ package org.example.odiya.eta.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.odiya.common.exception.BadRequestException;
 import org.example.odiya.eta.domain.Eta;
+import org.example.odiya.eta.domain.EtaStatus;
+import org.example.odiya.eta.dto.response.EtaUpdateResult;
 import org.example.odiya.eta.repository.EtaRepository;
 import org.example.odiya.mate.domain.Mate;
-import org.example.odiya.mate.service.MateQueryService;
 import org.example.odiya.meeting.domain.Meeting;
-import org.example.odiya.meeting.service.MeetingQueryService;
 import org.example.odiya.route.service.RouteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
-import static org.example.odiya.common.exception.type.ErrorType.MEETING_OVERDUE_ERROR;
-import static org.example.odiya.common.exception.type.ErrorType.NOT_ONE_HOUR_BEFORE_MEETING_ERROR;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EtaService {
 
+    private static final long ARRIVAL_THRESHOLD_MINUTES = 3;
+
     private final EtaRepository etaRepository;
-    private final MeetingQueryService meetingQueryService;
-    private final MateQueryService mateQueryService;
     private final EtaQueryService etaQueryService;
     private final RouteService routeService;
 
@@ -35,38 +32,49 @@ public class EtaService {
     }
 
     @Transactional
-    public void updateEtaOfMate(Long meetingId, Long memberId) {
-        Meeting meeting = meetingQueryService.findById(meetingId);
-        mateQueryService.validateMateExists(meetingId, memberId);
-        if (meeting.isOverdue()) {
-            throw new BadRequestException(MEETING_OVERDUE_ERROR);
-        }
-        verifyAnHourBeforeMeetingTime(meeting);
+    public void saveEtaUpdates(List<CompletableFuture<EtaUpdateResult>> futures) {
+        List<Eta> etasToUpdate = futures.stream()
+                .map(CompletableFuture::join)
+                .map(result -> {
+                    Eta eta = result.eta();
+                    if (result.isFailed()) {
+                        eta.markAsMissing();
+                    } else {
+                        if (result.remainingMinutes() <= ARRIVAL_THRESHOLD_MINUTES) {
+                            eta.markAsArrived();
+                        }
+                        eta.updateRemainingMinutes(result.remainingMinutes());
+                    }
+                    return eta;
+                })
+                .toList();
 
-        meeting.getMates().forEach(mate -> {
-            Eta eta = etaQueryService.findByMateId(mate.getId());
-            if (eta.isArrived() || eta.isMissing()) {
-                return;
-            }
+        etaRepository.saveAll(etasToUpdate);
+    }
 
+    public CompletableFuture<EtaUpdateResult> calculateEtaAsync(Eta eta, Meeting meeting) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 long remainingMinutes = routeService.calculateOptimalRoute(
-                        mate.getOrigin().getCoordinates(),
+                        eta.getMate().getOrigin().getCoordinates(),
                         meeting.getTargetCoordinates()
                 );
-                eta.updateRemainingMinutes(remainingMinutes);
+                return new EtaUpdateResult(eta, remainingMinutes, false);
             } catch (Exception e) {
-                eta.markAsMissing();
-                log.error("Failed to update ETA for mate: {}", mate.getId(), e);
+                log.error("Failed to update ETA for mate: {}", eta.getMate().getId(), e);
+                return new EtaUpdateResult(eta, 0, true);
             }
-
         });
     }
 
-    private void verifyAnHourBeforeMeetingTime(Meeting meeting) {
-        LocalDateTime meetingTime = meeting.getMeetingTime();
-        if (LocalDateTime.now().isBefore(meetingTime.minusHours(1))) {
-            throw new BadRequestException(NOT_ONE_HOUR_BEFORE_MEETING_ERROR);
-        }
+    public List<Eta> filterUpdatableEtas(List<Eta> etas) {
+        return etas.stream()
+                .filter(eta -> !eta.isArrived() && !eta.isMissing())
+                .toList();
+    }
+
+    public EtaStatus findEtaStatus(Mate mate) {
+        Eta eta = etaQueryService.findByMateId(mate.getId());
+        return EtaStatus.of(eta, mate.getMeeting());
     }
 }
