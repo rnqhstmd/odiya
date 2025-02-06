@@ -17,8 +17,8 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     @Query("UPDATE Meeting m SET m.overdue = true " +
             "WHERE m.overdue = false " +
-            "AND m.date <= :date " +  // 날짜 비교
-            "AND m.time <= :time")    // 시간 비교
+            "AND ((m.date < :date) " +
+            "OR (m.date = :date AND m.time <= :time))")
     @Modifying
     int bulkUpdateOverdueStatus(
             @Param("date") LocalDate date,
