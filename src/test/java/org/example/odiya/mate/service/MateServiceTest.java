@@ -1,5 +1,6 @@
 package org.example.odiya.mate.service;
 
+import org.example.odiya.common.BaseTest.BaseServiceTest;
 import org.example.odiya.common.exception.BadRequestException;
 import org.example.odiya.common.exception.ConflictException;
 import org.example.odiya.eta.service.EtaService;
@@ -8,111 +9,96 @@ import org.example.odiya.mate.dto.request.MateJoinRequest;
 import org.example.odiya.mate.dto.response.MateJoinResponse;
 import org.example.odiya.mate.repository.MateRepository;
 import org.example.odiya.meeting.domain.Coordinates;
-import org.example.odiya.meeting.domain.Location;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.meeting.repository.MeetingRepository;
 import org.example.odiya.meeting.service.MeetingQueryService;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.repository.MemberRepository;
 import org.example.odiya.route.domain.RouteInfo;
-import org.example.odiya.route.dto.response.GoogleDirectionResponse;
 import org.example.odiya.route.service.GoogleRouteClient;
 import org.example.odiya.route.service.RouteService;
+import org.example.odiya.route.service.TmapRouteClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Collections;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.example.odiya.common.exception.type.ErrorType.DUPLICATION_MATE_ERROR;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-class MateServiceTest {
+class MateServiceTest extends BaseServiceTest {
 
-    @Mock
+    @Autowired
+    private MateService mateService;
+
+    @Autowired
     private MateRepository mateRepository;
 
-    @Mock
+    @Autowired
     private MemberRepository memberRepository;
 
-    @Mock
+    @Autowired
     private MeetingRepository meetingRepository;
 
-    @Mock
+    @Autowired
     private MateQueryService mateQueryService;
 
-    @Mock
+    @Autowired
     private EtaService etaService;
 
-    @Mock
+    @Autowired
     private RouteService routeService;
 
-    @Mock
+    @Autowired
     private MeetingQueryService meetingQueryService;
 
-    @Mock
-    private GoogleRouteClient client;
-
-    @InjectMocks
-    private MateService mateService;
+    @MockBean
+    private GoogleRouteClient googleRouteClient;
+    @MockBean
+    private TmapRouteClient tmapRouteClient;
 
     private Member member;
     private Meeting meeting;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        member = Member.builder().id(1L).name("사용자1").email("test@test.com").password("abcd1234").build();
-        when(memberRepository.save(any(Member.class))).thenReturn(member);
-
-        meeting = Meeting.builder().id(1L).name("모임1").inviteCode("123456").build();
-        when(meetingRepository.save(any(Meeting.class))).thenReturn(meeting);
-        // Location 객체 생성 및 Meeting에 설정
-        Location meetingLocation = new Location("서울 강남구 선릉로 427", "37.504198", "127.049794");
-        meeting.setTarget(meetingLocation);
-
-        when(meetingQueryService.findMeetingByInviteCode("123456")).thenReturn(meeting);
+    void setUpMateTest() {
+        // BaseServiceTest의 setUp()이 자동으로 실행됨
+        member = fixtureGenerator.generateMember();
+        meeting = fixtureGenerator.generateMeeting();
     }
 
     @Test
     @DisplayName("정상적으로 모임에 참가할 수 있다.")
     void joinMeeting_Success() {
-        // Request 설정
-        MateJoinRequest request = new MateJoinRequest("123456", "서울 강남구 테헤란로 411", "37.505713", "127.050691");
+        // Given
+        MateJoinRequest request = dtoGenerator.generateMateJoinRequest(meeting);
+        RouteInfo transitRouteInfo = new RouteInfo(4L, 1000L);
+        RouteInfo walkingRouteInfo = new RouteInfo(3L, 500L);
+        when(googleRouteClient.calculateRouteTime(any(Coordinates.class), any(Coordinates.class))).thenReturn(transitRouteInfo);
+        when(tmapRouteClient.calculateRouteTime(any(Coordinates.class), any(Coordinates.class))).thenReturn(walkingRouteInfo);
 
-        // Mock GoogleDirectionResponse 생성
-        GoogleDirectionResponse mockResponse = createMockGoogleResponse();
-        RouteInfo routeInfo = new RouteInfo(
-                mockResponse.getRoutes().get(0).getLegs().get(0).getDuration().getValue() / 60,
-                mockResponse.getRoutes().get(0).getLegs().get(0).getDistance().getValue());
-
-        // Mock 설정
-        when(meetingQueryService.findMeetingByInviteCode(request.getInviteCode())).thenReturn(meeting);
-        when(client.calculateRouteTime(any(Coordinates.class), any(Coordinates.class))).thenReturn(routeInfo);
-
-        Mate mate = request.toMate(meeting, member, routeInfo.getMinutes());
-        when(mateRepository.save(any(Mate.class))).thenReturn(mate);
-
+        // When
         MateJoinResponse response = mateService.joinMeeting(member, request);
 
+        // Then
         assertThat(response).isNotNull();
+        Mate savedMate = mateRepository.findByMemberIdAndMeetingId(member.getId(), meeting.getId())
+                .orElseThrow();
+        assertThat(savedMate.getMember().getId()).isEqualTo(member.getId());
+        assertThat(savedMate.getMeeting().getId()).isEqualTo(meeting.getId());
     }
 
     @Test
     @DisplayName("종료된 모임에 참가하려고 하면 예외가 발생한다.")
     void joinMeeting_MeetingOverdue() {
-        MateJoinRequest request = new MateJoinRequest();
-        meeting.setOverdue(true);
+        // Given
+        Meeting overdueMeeting = fixtureGenerator.generateOverdueMeeting();
+        MateJoinRequest request = dtoGenerator.generateMateJoinRequest(overdueMeeting);
 
-        when(meetingQueryService.findMeetingByInviteCode(request.getInviteCode())).thenReturn(meeting);
-
+        // When & Then
         assertThatThrownBy(() -> mateService.joinMeeting(member, request))
                 .isInstanceOf(BadRequestException.class);
     }
@@ -121,64 +107,11 @@ class MateServiceTest {
     @DisplayName("이미 참가한 사용자가 모임에 다시 참가하려고 하면 예외가 발생한다.")
     void joinMeeting_AlreadyJoined() {
         // Given
-        MateJoinRequest request = new MateJoinRequest("123456", "서울 강남구 테헤란로 411", "37.505713", "127.050691");
+        Mate existingMate = fixtureGenerator.generateMate(meeting, member);
+        MateJoinRequest request = dtoGenerator.generateMateJoinRequest(meeting);
 
-        // When
-        when(meetingQueryService.findMeetingByInviteCode(request.getInviteCode())).thenReturn(meeting);
-        doThrow(new ConflictException(DUPLICATION_MATE_ERROR))
-                .when(mateQueryService)
-                .validateMateNotExists(member.getId(), meeting.getId());
-
-        // Then
+        // When & Then
         assertThatThrownBy(() -> mateService.joinMeeting(member, request))
                 .isInstanceOf(ConflictException.class);
-    }
-
-    private GoogleDirectionResponse createMockGoogleResponse() {
-        GoogleDirectionResponse response = new GoogleDirectionResponse();
-
-        // Route 설정
-        GoogleDirectionResponse.Route route = new GoogleDirectionResponse.Route();
-
-        // Leg 설정
-        GoogleDirectionResponse.Leg leg = new GoogleDirectionResponse.Leg();
-        GoogleDirectionResponse.TextValue duration = new GoogleDirectionResponse.TextValue();
-        duration.setText("4 mins");
-        duration.setValue(256L); // 256초 = 약 4분
-        leg.setDuration(duration);
-
-        GoogleDirectionResponse.TextValue distance = new GoogleDirectionResponse.TextValue();
-        distance.setText("1 km");
-        distance.setValue(1000L); // 1000미터 = 1킬로미터
-        leg.setDistance(distance);
-
-        // Location 설정
-        GoogleDirectionResponse.Location startLocation = new GoogleDirectionResponse.Location();
-        startLocation.setLat(37.5160869);
-        startLocation.setLng(126.8867896);
-
-        GoogleDirectionResponse.Location endLocation = new GoogleDirectionResponse.Location();
-        endLocation.setLat(37.5160638);
-        endLocation.setLng(126.8863715);
-
-        leg.setStartLocation(startLocation);
-        leg.setEndLocation(endLocation);
-        leg.setStartAddress("10 Mullae-dong 5(o)-ga, Yeongdeungpo District, Seoul, South Korea");
-        leg.setEndAddress("12 Mullae-dong 5(o)-ga, Yeongdeungpo District, Seoul, South Korea");
-
-        // Steps 설정
-        GoogleDirectionResponse.Step step = new GoogleDirectionResponse.Step();
-        step.setDuration(duration);
-        step.setStartLocation(startLocation);
-        step.setEndLocation(endLocation);
-
-        leg.setSteps(Collections.singletonList(step));
-        route.setLegs(Collections.singletonList(leg));
-        response.setRoutes(Collections.singletonList(route));
-
-        // Status 설정
-        response.setStatus("OK");
-
-        return response;
     }
 }
