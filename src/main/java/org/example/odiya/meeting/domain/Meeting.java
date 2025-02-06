@@ -53,6 +53,16 @@ public class Meeting extends BaseEntity {
         this(null, name, target, date, TimeUtil.trimSecondsAndNanos(time), null, false, null);
     }
 
+    // 테스트용 생성자
+    public Meeting(Long id, String name, Location target, LocalDate date, LocalTime time, String inviteCode) {
+        this.id = id;
+        this.name = name;
+        this.inviteCode = inviteCode;
+        this.target = target;
+        this.date = date;
+        this.time = time;
+    }
+
     // 6자리 숫자로 구성된 초대 코드를 생성
     public void generateInviteCode() {
         this.inviteCode = RandomStringUtils.randomNumeric(6);
