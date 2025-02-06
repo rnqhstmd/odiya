@@ -54,13 +54,14 @@ public class Meeting extends BaseEntity {
     }
 
     // 테스트용 생성자
-    public Meeting(Long id, String name, Location target, LocalDate date, LocalTime time, String inviteCode) {
+    public Meeting(Long id, List<Mate> mates, String inviteCode, LocalTime time, LocalDate date, Location target, String name) {
         this.id = id;
-        this.name = name;
+        this.mates = mates;
         this.inviteCode = inviteCode;
-        this.target = target;
-        this.date = date;
         this.time = time;
+        this.date = date;
+        this.target = target;
+        this.name = name;
     }
 
     // 6자리 숫자로 구성된 초대 코드를 생성
