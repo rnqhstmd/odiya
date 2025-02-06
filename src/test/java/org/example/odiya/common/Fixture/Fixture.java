@@ -7,6 +7,7 @@ import org.example.odiya.member.domain.Member;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class Fixture {
 
@@ -28,16 +29,20 @@ public class Fixture {
             TARGET_LOCATION,
             LocalDate.now().plusDays(1),
             LocalTime.parse("18:00"),
-            "123456"
+            "123456",
+            false,
+            new ArrayList<>()
     );
 
     public static Meeting CELEBRATE_MEETING = new Meeting(
             2L,
             "축하파티",
             TARGET_LOCATION,
-            LocalDate.now().plusDays(2),
+            LocalDate.now().minusDays(2),
             LocalTime.parse("20:00"),
-            "234567"
+            "234567",
+            false,
+            new ArrayList<>()
     );
 
     public static Member MEMBER1 = new Member(
