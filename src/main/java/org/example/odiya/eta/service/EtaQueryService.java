@@ -7,6 +7,8 @@ import org.example.odiya.eta.repository.EtaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.example.odiya.common.exception.type.ErrorType.MATE_ETA_NOT_FOUND_ERROR;
 
 @Service
@@ -19,5 +21,9 @@ public class EtaQueryService {
     public Eta findByMateId(Long mateId) {
         return etaRepository.findByMateId(mateId)
                 .orElseThrow(() -> new NotFoundException(MATE_ETA_NOT_FOUND_ERROR));
+    }
+
+    public List<Eta> findAllByMeetingIdWithMate(Long meetingId) {
+        return etaRepository.findAllByMeetingIdWithMate(meetingId);
     }
 }
