@@ -27,8 +27,8 @@ public class Fixture {
             1L,
             "소주먹기",
             TARGET_LOCATION,
-            LocalDate.now().plusDays(1),
-            LocalTime.parse("18:00"),
+            LocalDate.now(),
+            LocalTime.now().plusMinutes(50),
             "123456",
             false,
             new ArrayList<>()
