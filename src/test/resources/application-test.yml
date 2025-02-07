@@ -26,12 +26,12 @@ spring:
 security:
   jwt:
     token:
-      access-secret-key: ${ACCESS_SECRET}
+      access-secret-key: test_secret_key_for_testing_purposes_only
       access-expire-length: 3600
 
 kakao:
   api:
-    key: ${KAKAO_API_KEY}
+    key: testApiKey
     host: https://dapi.kakao.com
     keyword-search-path: /v2/local/search/keyword.json
     address-search-path: /v2/local/search/address.json
@@ -40,5 +40,9 @@ kakao:
 route:
   google:
     api:
-      key: ${GOOGLE_API_KEY}
+      key: testApiKey
       url: https://maps.googleapis.com/maps/api/directions/json
+  tmap:
+    api:
+      key: testApiKey
+      url: https://apis.openapi.sk.com/tmap/routes/pedestrian

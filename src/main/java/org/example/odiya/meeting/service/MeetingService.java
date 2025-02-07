@@ -84,7 +84,7 @@ public class MeetingService {
 
     public void updateEtaForMeetingMates(Long meetingId, Long memberId) {
         Meeting meeting = meetingQueryService.findById(meetingId);
-        mateQueryService.validateMateExists(meetingId, memberId);
+        mateQueryService.validateMateExists(memberId, meetingId);
         validateMeetingStatus(meeting);
 
         List<Eta> etas = etaQueryService.findAllByMeetingIdWithMate(meetingId);
