@@ -62,6 +62,8 @@ public enum ErrorType {
     EXTERNAL_API_ERROR("INTERNAL_50001", "외부 API 호출 에러입니다."),
     REST_TEMPLATE_ERROR("INTERNAL_50002", "RestTemplate 에러입니다."),
     TOO_MANY_REQUEST_ERROR("INTERNAL_50002", "API 호출 한도를 초과했습니다."),
+    FIREBASE_INIT_ERROR("INTERNAL_50003", "Firebase 초기화 에러입니다."),
+    FILE_PROCESS_ERROR("INTERNAL_50004", "파일 처리 중 에러가 발생했습니다."),
 
     // Validation
     NOT_NULL_VALID_ERROR("VALID_90000", "필수값이 누락되었습니다."),
