@@ -4,6 +4,7 @@ public enum NotificationType {
 
     ENTRY,
     LEAVE,
-    REMINDER
+    REMINDER,
+    HURRYUP,
 
 }
