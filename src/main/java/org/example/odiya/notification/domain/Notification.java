@@ -35,4 +35,16 @@ public class Notification extends BaseEntity {
 
     @Embedded
     private FcmTopic fcmTopic;
+
+    public boolean isStatusDismissed() {
+        return status == NotificationStatus.DISMISSED;
+    }
+
+    public boolean isReminder() {
+        return type == NotificationType.REMINDER;
+    }
+
+    public void updateStatusToDone() {
+        this.status = NotificationStatus.DONE;
+    }
 }
