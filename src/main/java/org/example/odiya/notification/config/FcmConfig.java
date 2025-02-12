@@ -10,6 +10,7 @@ import org.example.odiya.common.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import static org.example.odiya.common.exception.type.ErrorType.FILE_PROCESS_ERR
 import static org.example.odiya.common.exception.type.ErrorType.FIREBASE_INIT_ERROR;
 
 @Slf4j
+@Profile("!test")
 @Configuration
 public class FcmConfig {
 
