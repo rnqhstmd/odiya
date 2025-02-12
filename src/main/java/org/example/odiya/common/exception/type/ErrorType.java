@@ -52,6 +52,9 @@ public enum ErrorType {
     // Eta
     MATE_ETA_NOT_FOUND_ERROR("ETA_40400", "약속 참여자의 ETA 상태를 찾을 수 없습니다."),
 
+    // Notification
+    NOTIFICATION_NOT_FOUND_ERROR("NOTIFICATION_40400", "해당 알림을 찾을 수 없습니다."),
+
     // Route
     SEARCH_ROUTE_NOT_FOUND_ERROR("ROUTE_40400", "경로를 찾을 수 없습니다."),
     INVALID_ROUTE_REQUEST_ERROR("ROUTE_40000", "경로 요청이 잘못되었습니다."),
@@ -61,9 +64,12 @@ public enum ErrorType {
     INTERNAL_SERVER_ERROR("INTERNAL_50000", "서버 내부 에러입니다."),
     EXTERNAL_API_ERROR("INTERNAL_50001", "외부 API 호출 에러입니다."),
     REST_TEMPLATE_ERROR("INTERNAL_50002", "RestTemplate 에러입니다."),
-    TOO_MANY_REQUEST_ERROR("INTERNAL_50002", "API 호출 한도를 초과했습니다."),
-    FIREBASE_INIT_ERROR("INTERNAL_50003", "Firebase 초기화 에러입니다."),
-    FILE_PROCESS_ERROR("INTERNAL_50004", "파일 처리 중 에러가 발생했습니다."),
+    TOO_MANY_REQUEST_ERROR("INTERNAL_50003", "API 호출 한도를 초과했습니다."),
+    FIREBASE_INIT_ERROR("INTERNAL_50004", "Firebase 초기화 에러입니다."),
+    FILE_PROCESS_ERROR("INTERNAL_50005", "파일 처리 중 에러가 발생했습니다."),
+    FIREBASE_SUBSCRIBE_ERROR("INTERNAL_50006", "Firebase Subscribe 중 에러가 발생했습니다."),
+    FIREBASE_UNSUBSCRIBE_ERROR("INTERNAL_50007", "Firebase Unsubscribe 중 에러가 발생했습니다."),
+    FIREBASE_SEND_ERROR("INTERNAL_50008", "Firebase Send 중 에러가 발생했습니다."),
 
     // Validation
     NOT_NULL_VALID_ERROR("VALID_90000", "필수값이 누락되었습니다."),
