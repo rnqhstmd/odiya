@@ -7,13 +7,18 @@ import org.example.odiya.mate.domain.Mate;
 import org.example.odiya.mate.repository.MateRepository;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.meeting.repository.MeetingRepository;
+import org.example.odiya.member.domain.DeviceToken;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.repository.MemberRepository;
+import org.example.odiya.notification.domain.FcmTopic;
+import org.example.odiya.notification.domain.Notification;
+import org.example.odiya.notification.domain.NotificationStatus;
+import org.example.odiya.notification.domain.NotificationType;
+import org.example.odiya.notification.repository.NotificationRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class FixtureGenerator {
@@ -22,12 +27,20 @@ public class FixtureGenerator {
     private final MeetingRepository meetingRepository;
     private final MateRepository mateRepository;
     private final EtaRepository etaRepository;
+    private final NotificationRepository notificationRepository;
 
-    public FixtureGenerator(MemberRepository memberRepository, MeetingRepository meetingRepository, MateRepository mateRepository, EtaRepository etaRepository) {
+    public FixtureGenerator(
+            MemberRepository memberRepository,
+            MeetingRepository meetingRepository,
+            MateRepository mateRepository,
+            EtaRepository etaRepository,
+            NotificationRepository notificationRepository
+    ) {
         this.memberRepository = memberRepository;
         this.meetingRepository = meetingRepository;
         this.mateRepository = mateRepository;
         this.etaRepository = etaRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     // Meeting 생성
@@ -75,6 +88,7 @@ public class FixtureGenerator {
                 .name(name)
                 .email(name + UUID.randomUUID() + "@test.com")
                 .password("password")
+                .deviceToken(new DeviceToken(UUID.randomUUID() + "deviceToken"))
                 .build());
     }
 
@@ -127,94 +141,77 @@ public class FixtureGenerator {
         return etaRepository.save(eta);
     }
 
-    // 복합 시나리오 생성
-    public MeetingWithMatesData generateMeetingWithMates(int mateCount) {
-        Meeting meeting = generateMeeting();
-        List<Mate> mates = IntStream.range(0, mateCount)
-                .mapToObj(i -> generateMate(meeting))
-                .collect(Collectors.toList());
-        return new MeetingWithMatesData(meeting, mates);
+    // 기본 알림 생성
+    public Notification generateNotification() {
+        return generateNotification(generateMate());
     }
 
-    public EtaScenarioData generateEtaScenario() {
-        Meeting meeting = generateMeeting();
-
-        Mate arrivedMate = generateMate(meeting);
-        Eta arrivedEta = generateArrivedEta(arrivedMate);
-
-        Mate missingMate = generateMate(meeting);
-        Eta missingEta = generateMissingEta(missingMate);
-
-        Mate movingMate = generateMate(meeting);
-        Eta movingEta = generateEta(movingMate, 30L);
-
-        return new EtaScenarioData(meeting, arrivedMate, arrivedEta,
-                missingMate, missingEta, movingMate, movingEta);
+    // Mate와 함께 알림 생성
+    public Notification generateNotification(Mate mate) {
+        return generateNotification(mate, NotificationType.REMINDER, NotificationStatus.PENDING);
     }
 
-    public static class MeetingWithMatesData {
-        private final Meeting meeting;
-        private final List<Mate> mates;
-
-        public MeetingWithMatesData(Meeting meeting, List<Mate> mates) {
-            this.meeting = meeting;
-            this.mates = mates;
-        }
-
-        public Meeting getMeeting() {
-            return meeting;
-        }
-
-        public List<Mate> getMates() {
-            return mates;
-        }
+    // 타입과 상태를 지정하여 알림 생성
+    public Notification generateNotification(
+            Mate mate,
+            NotificationType type,
+            NotificationStatus status
+    ) {
+        return notificationRepository.save(Notification.builder()
+                .mate(mate)
+                .type(type)
+                .status(status)
+                .sendAt(LocalDateTime.now())
+                .fcmTopic(new FcmTopic(mate.getMeeting()))
+                .build());
     }
 
-    public static class EtaScenarioData {
-        private final Meeting meeting;
-        private final Mate arrivedMate;
-        private final Eta arrivedEta;
-        private final Mate missingMate;
-        private final Eta missingEta;
-        private final Mate movingMate;
-        private final Eta movingEta;
+    // 특정 시간의 알림 생성
+    public Notification generateNotification(
+            Mate mate,
+            LocalDateTime sendAt,
+            NotificationStatus status
+    ) {
+        return notificationRepository.save(Notification.builder()
+                .mate(mate)
+                .type(NotificationType.REMINDER)
+                .status(status)
+                .sendAt(sendAt)
+                .fcmTopic(new FcmTopic(mate.getMeeting()))
+                .build());
+    }
 
-        public EtaScenarioData(Meeting meeting, Mate arrivedMate, Eta arrivedEta, Mate missingMate, Eta missingEta, Mate movingMate, Eta movingEta) {
-            this.meeting = meeting;
-            this.arrivedMate = arrivedMate;
-            this.arrivedEta = arrivedEta;
-            this.missingMate = missingMate;
-            this.missingEta = missingEta;
-            this.movingMate = movingMate;
-            this.movingEta = movingEta;
-        }
+    // DISMISSED 상태의 알림 생성
+    public Notification generateDismissedNotification(Mate mate) {
+        return generateNotification(mate, NotificationType.REMINDER, NotificationStatus.DISMISSED);
+    }
 
-        public Meeting getMeeting() {
-            return meeting;
-        }
+    // DONE 상태의 알림 생성
+    public Notification generateDoneNotification(Mate mate) {
+        return generateNotification(mate, NotificationType.REMINDER, NotificationStatus.DONE);
+    }
 
-        public Mate getArrivedMate() {
-            return arrivedMate;
-        }
+    // PENDING 상태의 알림 생성
+    public Notification generatePendingNotification(Mate mate) {
+        return generateNotification(mate, NotificationType.REMINDER, NotificationStatus.PENDING);
+    }
 
-        public Eta getArrivedEta() {
-            return arrivedEta;
-        }
+    // 여러 개의 알림 생성
+    public List<Notification> generateNotifications(Mate mate, int count) {
+        return IntStream.range(0, count)
+                .mapToObj(i -> generateNotification(mate))
+                .toList();
+    }
 
-        public Mate getMissingMate() {
-            return missingMate;
-        }
-
-        public Eta getMissingEta() {
-            return missingEta;
-        }
-
-        public Mate getMovingMate() {
-            return movingMate;
-        }
-
-        public Eta getMovingEta() {
-            return movingEta;
-        }
+    // 특정 타입의 여러 알림 생성
+    public List<Notification> generateNotifications(
+            Mate mate,
+            NotificationType type,
+            NotificationStatus status,
+            int count
+    ) {
+        return IntStream.range(0, count)
+                .mapToObj(i -> generateNotification(mate, type, status))
+                .toList();
     }
 }
