@@ -14,7 +14,6 @@ import org.example.odiya.notification.service.event.PushEvent;
 import org.example.odiya.notification.service.event.SubscribeEvent;
 import org.example.odiya.notification.repository.NotificationRepository;
 import org.example.odiya.notification.service.fcm.FcmPublisher;
-import org.example.odiya.notification.service.fcm.FcmPushSender;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +30,6 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final FcmPublisher fcmPublisher;
     private final TaskScheduler taskScheduler;
-    private final FcmPushSender fcmPushSender;
 
     @Transactional
     public void saveAndScheduleNotification(Notification notification) {
@@ -64,9 +62,9 @@ public class NotificationService {
     }
 
     @Transactional
-    public void sendHurryUpNotification(Mate mate, HurryUpNotification hurryUpNotification) {
+    public void sendHurryUpNotification(Mate sender, HurryUpNotification hurryUpNotification) {
         Notification savedNotification = saveNotification(hurryUpNotification.toNotification());
-        fcmPublisher.publishWithTransaction(new HurryUpEvent(this, mate, savedNotification));
+        fcmPublisher.publishWithTransaction(new HurryUpEvent(this, sender, savedNotification));
     }
 
     public void subscribeTopic(DeviceToken deviceToken, FcmTopic fcmTopic) {
