@@ -2,10 +2,14 @@ package org.example.odiya.notification.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.odiya.mate.domain.Mate;
 import org.example.odiya.notification.domain.Notification;
+import org.example.odiya.notification.domain.types.HurryUpNotification;
+import org.example.odiya.notification.dto.request.HurryUpRequest;
 import org.example.odiya.notification.dto.request.PushRequest;
 import org.example.odiya.notification.repository.NotificationRepository;
 import org.example.odiya.notification.service.fcm.FcmPublisher;
+import org.example.odiya.notification.service.fcm.FcmPushSender;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final FcmPublisher fcmPublisher;
     private final TaskScheduler taskScheduler;
+    private final FcmPushSender fcmPushSender;
 
     @Transactional
     public void saveAndScheduleNotification(Notification notification) {
@@ -50,5 +55,13 @@ public class NotificationService {
                     notification.getId(),
                     notification.getType());
         }
+    }
+
+    @Transactional
+    public void sendHurryUpNotification(Mate mate, Notification notification) {
+        HurryUpNotification hurryUpNotification = new HurryUpNotification(mate);
+        Notification savedNotification = saveNotification(hurryUpNotification.toNotification());
+        HurryUpRequest hurryUpRequest = new HurryUpRequest(this, mate, savedNotification);
+        fcmPublisher.publishWithTransaction(hurryUpRequest);
     }
 }
