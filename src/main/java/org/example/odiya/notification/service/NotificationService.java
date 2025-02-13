@@ -7,6 +7,7 @@ import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.member.domain.DeviceToken;
 import org.example.odiya.notification.domain.FcmTopic;
 import org.example.odiya.notification.domain.Notification;
+import org.example.odiya.notification.domain.NotificationType;
 import org.example.odiya.notification.domain.types.HurryUpNotification;
 import org.example.odiya.notification.service.event.HurryUpEvent;
 import org.example.odiya.notification.service.event.PushEvent;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -74,5 +76,16 @@ public class NotificationService {
     public void unsubscribeTopic(Meeting meeting, DeviceToken deviceToken) {
         FcmTopic fcmTopic = new FcmTopic(meeting);
         fcmPublisher.publish(new SubscribeEvent(this, deviceToken, fcmTopic));
+    }
+
+    public void unsubscribeTopics(List<Meeting> meetingList) {
+        for (Meeting meeting : meetingList) {
+            notificationRepository
+                    .findAllMeetingIdAndType(meeting.getId(), NotificationType.REMINDER)
+                    .forEach(notification -> unsubscribeTopic(
+                            meeting,
+                            notification.getMate().getMember().getDeviceToken()
+                    ));
+        }
     }
 }
