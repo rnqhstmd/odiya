@@ -12,8 +12,9 @@ import org.example.odiya.notification.domain.message.GroupMessage;
 import org.example.odiya.notification.service.NotificationQueryService;
 import org.example.odiya.notification.service.NotificationService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.example.odiya.common.exception.type.ErrorType.FIREBASE_SEND_ERROR;
+import static org.example.odiya.common.exception.type.ErrorType.*;
 
 @Slf4j
 @Component
@@ -27,7 +28,7 @@ public class FcmPushSender {
     public void sendGroupMessage(GroupMessage groupMessage, Notification notification) {
         Notification savedNotification = notificationQueryService.findById(notification.getId());
         if (savedNotification.isStatusDismissed()) {
-            log.info("DISMISSED 상태 알림 전송 스킵 - id: {}", notification.getId());
+            log.info("DISMISSED 상태 알림 전송 스킵 - id: {}", savedNotification.getId());
             return;
         }
         sendMessage(groupMessage.message());
@@ -46,8 +47,11 @@ public class FcmPushSender {
         try {
             firebaseMessaging.send(message);
         } catch (FirebaseMessagingException e) {
-            log.error("메시지 전송 실패 - error: {}", e.getMessage());
+            log.error("메시지 전송 FirebaseMessagingException - error: {}", e.getMessage());
             throw new InternalServerException(FIREBASE_SEND_ERROR);
+        } catch (Exception e) {
+            log.error("메시지 전송 Exception - error: {}", e.getMessage());
+            throw new InternalServerException(INTERNAL_SERVER_ERROR);
         }
     }
 }
