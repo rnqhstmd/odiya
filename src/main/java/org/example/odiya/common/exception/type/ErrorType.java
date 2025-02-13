@@ -44,10 +44,13 @@ public enum ErrorType {
     MEETING_OVERDUE_ERROR("MEETING_40401", "해당 약속은 이미 종료되었습니다."),
     NO_DATE_AND_TIME_ERROR("MEETING_40402", "설정된 약속 시간이 없습니다."),
     NOT_ONE_HOUR_BEFORE_MEETING_ERROR("MEETING_40000", "설정된 약속 시간보다 1시간 전이 아닙니다."),
+    NOT_SAME_MEETING_ERROR("MEETING_40001", "재촉한 참여자와 재촉 당한 참여자가 같은 약속에 속해있지 않습니다."),
 
     // Mate
     DUPLICATION_MATE_ERROR("MATE_40900", "해당 약속에 이미 참여한 멤버입니다."),
-    NOT_PARTICIPATED_MATE_ERROR("MATE_40400", "해당 약속에 참여하지 않았습니다."),
+    NOT_PARTICIPATED_MATE_ERROR("MATE_40300", "해당 약속에 참여하지 않았습니다."),
+    MATE_NOT_FOUND_ERROR("MATE_40400", "해당 약속 참여자를 찾을 수 없습니다."),
+    NOT_LATE_MATE_ERROR("MATE_40000", "해당 약속 참여자는 지각상태가 아닙니다."),
 
     // Eta
     MATE_ETA_NOT_FOUND_ERROR("ETA_40400", "약속 참여자의 ETA 상태를 찾을 수 없습니다."),
