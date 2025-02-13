@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class ReminderNotification extends AbstractNotification {
 
-    public ReminderNotification(Meeting meeting, Mate mate, LocalDateTime departureTime, FcmTopic fcmTopic) {
+    public ReminderNotification(Meeting meeting, Mate mate, FcmTopic fcmTopic) {
         super(mate, getDepartureTime(meeting, mate.getEstimatedTime()), NotificationStatus.PENDING, fcmTopic);
     }
 
