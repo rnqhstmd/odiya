@@ -3,10 +3,14 @@ package org.example.odiya.notification.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.odiya.mate.domain.Mate;
+import org.example.odiya.meeting.domain.Meeting;
+import org.example.odiya.member.domain.DeviceToken;
+import org.example.odiya.notification.domain.FcmTopic;
 import org.example.odiya.notification.domain.Notification;
 import org.example.odiya.notification.domain.types.HurryUpNotification;
-import org.example.odiya.notification.dto.request.HurryUpRequest;
-import org.example.odiya.notification.dto.request.PushRequest;
+import org.example.odiya.notification.service.event.HurryUpEvent;
+import org.example.odiya.notification.service.event.PushEvent;
+import org.example.odiya.notification.service.event.SubscribeEvent;
 import org.example.odiya.notification.repository.NotificationRepository;
 import org.example.odiya.notification.service.fcm.FcmPublisher;
 import org.example.odiya.notification.service.fcm.FcmPushSender;
@@ -40,9 +44,9 @@ public class NotificationService {
 
     private void scheduleNotification(Notification notification) {
         LocalDateTime sendAt = notification.getSendAt();
-        PushRequest pushRequest = new PushRequest(this, notification);
+        PushEvent pushEvent = new PushEvent(this, notification);
         taskScheduler.schedule(
-                () -> fcmPublisher.publishWithTransaction(pushRequest),
+                () -> fcmPublisher.publishWithTransaction(pushEvent),
                 sendAt.atZone(ZoneId.systemDefault()).toInstant()
         );
         log.info("알림 스케줄링 - type: {}, 예약시간: {}", notification.getType(), sendAt);
@@ -58,10 +62,17 @@ public class NotificationService {
     }
 
     @Transactional
-    public void sendHurryUpNotification(Mate mate, Notification notification) {
-        HurryUpNotification hurryUpNotification = new HurryUpNotification(mate);
+    public void sendHurryUpNotification(Mate mate, HurryUpNotification hurryUpNotification) {
         Notification savedNotification = saveNotification(hurryUpNotification.toNotification());
-        HurryUpRequest hurryUpRequest = new HurryUpRequest(this, mate, savedNotification);
-        fcmPublisher.publishWithTransaction(hurryUpRequest);
+        fcmPublisher.publishWithTransaction(new HurryUpEvent(this, mate, savedNotification));
+    }
+
+    public void subscribeTopic(DeviceToken deviceToken, FcmTopic fcmTopic) {
+        fcmPublisher.publishWithTransaction(new SubscribeEvent(this, deviceToken, fcmTopic));
+    }
+
+    public void unsubscribeTopic(Meeting meeting, DeviceToken deviceToken) {
+        FcmTopic fcmTopic = new FcmTopic(meeting);
+        fcmPublisher.publish(new SubscribeEvent(this, deviceToken, fcmTopic));
     }
 }
