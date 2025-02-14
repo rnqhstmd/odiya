@@ -197,11 +197,10 @@ class MeetingServiceTest extends BaseServiceTest {
     }
 
     @Test
-    @DisplayName("모임 시간 1시간 전이 아닌 경우 예외를 발생시킨다")
+    @DisplayName("현재시간이 약속 시간 1시간 전보다 이전일경우 예외를 발생시킨다")
     void throwExceptionWhenNotOneHourBeforeMeeting() {
         // Given
         Meeting futureMeeting = fixtureGenerator.generateMeeting(LocalDateTime.now().plusDays(1));
-
         fixtureGenerator.generateMate(futureMeeting, member);
 
         // When & Then

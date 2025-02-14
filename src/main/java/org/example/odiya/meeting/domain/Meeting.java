@@ -80,4 +80,8 @@ public class Meeting extends BaseEntity {
     public Coordinates getTargetCoordinates() {
         return target.getCoordinates();
     }
+
+    public boolean isBeforeOneHourMeetingTime() {
+        return LocalDateTime.now().isBefore(getMeetingTime().minusHours(1));
+    }
 }

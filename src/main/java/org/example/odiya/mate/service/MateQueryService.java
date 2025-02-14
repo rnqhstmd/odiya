@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.odiya.common.exception.ConflictException;
 import org.example.odiya.common.exception.ForbiddenException;
 import org.example.odiya.common.exception.NotFoundException;
+import org.example.odiya.mate.domain.Mate;
 import org.example.odiya.mate.repository.MateRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.example.odiya.common.exception.type.ErrorType.DUPLICATION_MATE_ERROR;
-import static org.example.odiya.common.exception.type.ErrorType.NOT_PARTICIPATED_MATE_ERROR;
+import static org.example.odiya.common.exception.type.ErrorType.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,6 +17,11 @@ import static org.example.odiya.common.exception.type.ErrorType.NOT_PARTICIPATED
 public class MateQueryService {
 
     private final MateRepository mateRepository;
+
+    public Mate findById(Long mateId) {
+        return mateRepository.findById(mateId)
+                .orElseThrow(() -> new NotFoundException(MATE_NOT_FOUND_ERROR));
+    }
 
     public void validateMateNotExists(Long memberId, Long meetingId) {
         if (mateRepository.existsByMemberIdAndMeetingId(memberId, meetingId)) {

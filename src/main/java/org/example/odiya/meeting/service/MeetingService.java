@@ -22,7 +22,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -109,12 +108,8 @@ public class MeetingService {
         if (meeting.isOverdue()) {
             throw new BadRequestException(MEETING_OVERDUE_ERROR);
         }
-        verifyAnHourBeforeMeetingTime(meeting);
-    }
 
-    private void verifyAnHourBeforeMeetingTime(Meeting meeting) {
-        LocalDateTime meetingTime = meeting.getMeetingTime();
-        if (LocalDateTime.now().isBefore(meetingTime.minusHours(1))) {
+        if (meeting.isBeforeOneHourMeetingTime()) {
             throw new BadRequestException(NOT_ONE_HOUR_BEFORE_MEETING_ERROR);
         }
     }

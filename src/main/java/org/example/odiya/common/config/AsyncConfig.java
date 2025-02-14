@@ -2,6 +2,7 @@ package org.example.odiya.common.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -27,6 +28,17 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setQueueCapacity(20);
         executor.setThreadNamePrefix("EtaAsync-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean(name = "fcmExecutor")
+    public Executor fcmAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(25);
+        executor.setThreadNamePrefix("FcmAsync-");
         executor.initialize();
         return executor;
     }

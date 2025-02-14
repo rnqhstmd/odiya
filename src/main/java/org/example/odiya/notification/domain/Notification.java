@@ -1,10 +1,7 @@
 package org.example.odiya.notification.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.odiya.common.domain.BaseEntity;
 import org.example.odiya.mate.domain.Mate;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification extends BaseEntity {
@@ -35,4 +33,16 @@ public class Notification extends BaseEntity {
 
     @Embedded
     private FcmTopic fcmTopic;
+
+    public boolean isStatusDismissed() {
+        return status == NotificationStatus.DISMISSED;
+    }
+
+    public boolean isReminder() {
+        return type == NotificationType.REMINDER;
+    }
+
+    public void updateStatusToDone() {
+        this.status = NotificationStatus.DONE;
+    }
 }
