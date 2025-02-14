@@ -51,6 +51,7 @@ public enum ErrorType {
     NOT_PARTICIPATED_MATE_ERROR("MATE_40300", "해당 약속에 참여하지 않았습니다."),
     MATE_NOT_FOUND_ERROR("MATE_40400", "해당 약속 참여자를 찾을 수 없습니다."),
     NOT_LATE_MATE_ERROR("MATE_40000", "해당 약속 참여자는 지각상태가 아닙니다."),
+    REQUEST_MATE_MATCH_ERROR("MATE_40001", "재촉한 참여자와 로그인된 사용자가 일치하지 않습니다."),
 
     // Eta
     MATE_ETA_NOT_FOUND_ERROR("ETA_40400", "약속 참여자의 ETA 상태를 찾을 수 없습니다."),

@@ -3,6 +3,8 @@ package org.example.odiya.common.Fixture;
 import org.example.odiya.auth.dto.request.LoginRequest;
 import org.example.odiya.auth.dto.request.SigninRequest;
 import org.example.odiya.eta.dto.request.EtaRequest;
+import org.example.odiya.mate.domain.Mate;
+import org.example.odiya.mate.dto.request.HurryUpRequest;
 import org.example.odiya.mate.dto.request.MateJoinRequest;
 import org.example.odiya.meeting.domain.Location;
 import org.example.odiya.meeting.domain.Meeting;
@@ -56,6 +58,10 @@ public class DtoGenerator {
                 originLocation.getCoordinates().getLatitude(),
                 originLocation.getCoordinates().getLongitude()
         );
+    }
+
+    public HurryUpRequest generateHurryUpRequest(Mate sender, Mate receiver) {
+        return new HurryUpRequest(sender.getId(), receiver.getId());
     }
 
     public GoogleDirectionResponse generateGoogleDirectionResponse() {

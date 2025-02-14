@@ -61,13 +61,4 @@ public class Eta extends BaseEntity {
         return !isArrived && (estimatedArrival.isBefore(meeting.getMeetingTime()) ||
                 estimatedArrival.isEqual(meeting.getMeetingTime()));
     }
-
-    public boolean isLateExpected(Meeting meeting) {
-        if (isArrived || isMissing) {
-            return false;
-        }
-        LocalDateTime now = TimeUtil.nowWithTrim();
-        LocalDateTime estimatedArrival = now.plusMinutes(remainingMinutes);
-        return estimatedArrival.isAfter(meeting.getMeetingTime());
-    }
 }

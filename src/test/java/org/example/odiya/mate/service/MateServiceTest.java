@@ -3,17 +3,21 @@ package org.example.odiya.mate.service;
 import org.example.odiya.common.BaseTest.BaseServiceTest;
 import org.example.odiya.common.exception.BadRequestException;
 import org.example.odiya.common.exception.ConflictException;
+import org.example.odiya.eta.domain.Eta;
+import org.example.odiya.eta.domain.EtaStatus;
 import org.example.odiya.eta.service.EtaService;
 import org.example.odiya.mate.domain.Mate;
+import org.example.odiya.mate.dto.request.HurryUpRequest;
 import org.example.odiya.mate.dto.request.MateJoinRequest;
 import org.example.odiya.mate.dto.response.MateJoinResponse;
 import org.example.odiya.mate.repository.MateRepository;
 import org.example.odiya.meeting.domain.Coordinates;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.meeting.repository.MeetingRepository;
-import org.example.odiya.meeting.service.MeetingQueryService;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.repository.MemberRepository;
+import org.example.odiya.notification.domain.types.HurryUpNotification;
+import org.example.odiya.notification.service.NotificationService;
 import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.service.GoogleRouteClient;
 import org.example.odiya.route.service.RouteService;
@@ -24,10 +28,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class MateServiceTest extends BaseServiceTest {
 
@@ -44,62 +50,73 @@ class MateServiceTest extends BaseServiceTest {
     private MeetingRepository meetingRepository;
 
     @Autowired
-    private MateQueryService mateQueryService;
-
-    @Autowired
-    private EtaService etaService;
-
-    @Autowired
     private RouteService routeService;
 
-    @Autowired
-    private MeetingQueryService meetingQueryService;
+    @MockBean
+    private NotificationService notificationService;
+
+    @MockBean
+    private EtaService etaService;
 
     @MockBean
     private GoogleRouteClient googleRouteClient;
+
     @MockBean
     private TmapRouteClient tmapRouteClient;
 
     private Member member;
     private Meeting meeting;
+    private Mate sender;
+    private Mate receiver;
+    private Eta eta;
+    private HurryUpRequest request;
 
     @BeforeEach
     void setUpMateTest() {
-        // BaseServiceTest의 setUp()이 자동으로 실행됨
         member = fixtureGenerator.generateMember();
         meeting = fixtureGenerator.generateMeeting();
+
+        sender = fixtureGenerator.generateMate(meeting, member);
+        Member receiverMember = fixtureGenerator.generateMember();
+        receiver = fixtureGenerator.generateLateMate(meeting, receiverMember);
+        eta = fixtureGenerator.generateEta(receiver);
+        request = dtoGenerator.generateHurryUpRequest(sender, receiver);
     }
 
     @Test
-    @DisplayName("정상적으로 모임에 참가할 수 있다.")
+    @DisplayName("약속 참가에 성공한다")
     void joinMeeting_Success() {
         // Given
-        MateJoinRequest request = dtoGenerator.generateMateJoinRequest(meeting);
+        Member newMember = fixtureGenerator.generateMember();
+        MateJoinRequest mateJoinRequest = dtoGenerator.generateMateJoinRequest(meeting);
         RouteInfo transitRouteInfo = new RouteInfo(4L, 1000L);
         RouteInfo walkingRouteInfo = new RouteInfo(3L, 500L);
-        when(googleRouteClient.calculateRouteTime(any(Coordinates.class), any(Coordinates.class))).thenReturn(transitRouteInfo);
-        when(tmapRouteClient.calculateRouteTime(any(Coordinates.class), any(Coordinates.class))).thenReturn(walkingRouteInfo);
+
+        when(googleRouteClient.calculateRouteTime(any(Coordinates.class), any(Coordinates.class)))
+                .thenReturn(transitRouteInfo);
+        when(tmapRouteClient.calculateRouteTime(any(Coordinates.class), any(Coordinates.class)))
+                .thenReturn(walkingRouteInfo);
 
         // When
-        MateJoinResponse response = mateService.joinMeeting(member, request);
+        MateJoinResponse response = mateService.joinMeeting(newMember, mateJoinRequest);
 
         // Then
         assertThat(response).isNotNull();
-        Mate savedMate = mateRepository.findByMemberIdAndMeetingId(member.getId(), meeting.getId())
+        Mate savedMate = mateRepository.findByMemberIdAndMeetingId(newMember.getId(), meeting.getId())
                 .orElseThrow();
-        assertThat(savedMate.getMember().getId()).isEqualTo(member.getId());
+        assertThat(savedMate.getMember().getId()).isEqualTo(newMember.getId());
         assertThat(savedMate.getMeeting().getId()).isEqualTo(meeting.getId());
     }
 
     @Test
-    @DisplayName("종료된 모임에 참가하려고 하면 예외가 발생한다.")
+    @DisplayName("종료된 약속에 참가하려고 하면 예외가 발생한다.")
     void joinMeeting_MeetingOverdue() {
         // Given
         Meeting overdueMeeting = fixtureGenerator.generateOverdueMeeting();
-        MateJoinRequest request = dtoGenerator.generateMateJoinRequest(overdueMeeting);
+        MateJoinRequest mateJoinRequest = dtoGenerator.generateMateJoinRequest(overdueMeeting);
 
         // When & Then
-        assertThatThrownBy(() -> mateService.joinMeeting(member, request))
+        assertThatThrownBy(() -> mateService.joinMeeting(member, mateJoinRequest))
                 .isInstanceOf(BadRequestException.class);
     }
 
@@ -107,11 +124,92 @@ class MateServiceTest extends BaseServiceTest {
     @DisplayName("이미 참가한 사용자가 모임에 다시 참가하려고 하면 예외가 발생한다.")
     void joinMeeting_AlreadyJoined() {
         // Given
-        Mate existingMate = fixtureGenerator.generateMate(meeting, member);
-        MateJoinRequest request = dtoGenerator.generateMateJoinRequest(meeting);
+        MateJoinRequest mateJoinRequest = dtoGenerator.generateMateJoinRequest(meeting);
 
         // When & Then
-        assertThatThrownBy(() -> mateService.joinMeeting(member, request))
+        assertThatThrownBy(() -> mateService.joinMeeting(member, mateJoinRequest))
                 .isInstanceOf(ConflictException.class);
+    }
+
+    @Test
+    @DisplayName("재촉에 성공한다")
+    void hurryUpMate_Success() {
+        // Given
+        when(etaService.findEtaStatus(any(Mate.class))).thenReturn(EtaStatus.LATE);
+
+        // When
+        assertDoesNotThrow(() -> mateService.hurryUpMate(member, request));
+
+        // Then
+        verify(notificationService, times(1))
+                .sendHurryUpNotification(any(Mate.class), any(HurryUpNotification.class));
+    }
+
+    @Test
+    @DisplayName("서로 다른 미팅의 메이트에게 재촉할 수 없다")
+    void hurryUpMate_DifferentMeeting() {
+        // Given
+        Meeting otherMeeting = fixtureGenerator.generateMeeting();
+        Mate otherReceiver = fixtureGenerator.generateMate(
+                otherMeeting,
+                fixtureGenerator.generateMember()
+        );
+        HurryUpRequest invalidRequest = new HurryUpRequest(
+                sender.getId(),
+                otherReceiver.getId()
+        );
+
+        // When & Then
+        assertThatThrownBy(() -> mateService.hurryUpMate(member, invalidRequest))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    @DisplayName("약속 장소에 도착한 Mate에게 재촉할 수 없다")
+    void hurryUpMate_NotLateMate() {
+        // Given
+        when(etaService.findEtaStatus(receiver)).thenReturn(EtaStatus.ARRIVED);
+
+        // When & Then
+        assertThatThrownBy(() -> mateService.hurryUpMate(member, request))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    @DisplayName("종료된 약속에서는 재촉할 수 없다")
+    void hurryUpMate_OverdueMeeting() {
+        // Given
+        Meeting overdueMeeting = fixtureGenerator.generateOverdueMeeting();
+        Mate overdueReceiver = fixtureGenerator.generateMate(
+                overdueMeeting,
+                fixtureGenerator.generateMember()
+        );
+        HurryUpRequest overdueRequest = new HurryUpRequest(
+                sender.getId(),
+                overdueReceiver.getId()
+        );
+
+        // When & Then
+        assertThatThrownBy(() -> mateService.hurryUpMate(member, overdueRequest))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    @DisplayName("현재시간이 설정된 약속시간의 1시간 전 보다 이전이라면 재촉할 수 없다")
+    void hurryUpMate_BeforeOneHour() {
+        // Given
+        Meeting earlyMeeting = fixtureGenerator.generateMeetingBeforeOneHour();
+        Mate earlyReceiver = fixtureGenerator.generateMate(
+                earlyMeeting,
+                fixtureGenerator.generateMember()
+        );
+        HurryUpRequest earlyRequest = new HurryUpRequest(
+                sender.getId(),
+                earlyReceiver.getId()
+        );
+
+        // When & Then
+        assertThatThrownBy(() -> mateService.hurryUpMate(member, earlyRequest))
+                .isInstanceOf(BadRequestException.class);
     }
 }

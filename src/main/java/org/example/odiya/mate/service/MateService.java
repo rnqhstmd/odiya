@@ -94,10 +94,10 @@ public class MateService {
     }
 
     @Transactional
-    public void HurryUpMate(HurryUpRequest request) {
+    public void hurryUpMate(Member member, HurryUpRequest request) {
         Mate sender = mateQueryService.findById(request.getSenderId());
         Mate receiver = mateQueryService.findById(request.getReceiverId());
-        validateMateStatus(sender, receiver);
+        validateMateStatus(member, sender, receiver);
 
         Meeting meeting = meetingQueryService.findById(sender.getMeeting().getId());
         validateMeetingStatus(meeting);
@@ -106,7 +106,11 @@ public class MateService {
         notificationService.sendHurryUpNotification(sender, hurryUpNotification);
     }
 
-    private void validateMateStatus(Mate sender, Mate receiver) {
+    private void validateMateStatus(Member member, Mate sender, Mate receiver) {
+        if (!sender.getMember().getId().equals(member.getId())) {
+            throw new BadRequestException(REQUEST_MATE_MATCH_ERROR);
+        }
+
         if (!sender.getMeeting().getId().equals(receiver.getMeeting().getId())) {
             throw new BadRequestException(NOT_SAME_MEETING_ERROR);
         }
