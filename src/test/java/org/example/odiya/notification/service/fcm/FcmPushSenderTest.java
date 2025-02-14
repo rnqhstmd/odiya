@@ -12,6 +12,7 @@ import org.example.odiya.notification.domain.NotificationType;
 import org.example.odiya.notification.domain.message.DirectMessage;
 import org.example.odiya.notification.domain.message.GroupMessage;
 import org.example.odiya.notification.repository.NotificationRepository;
+import org.example.odiya.notification.service.NotificationQueryService;
 import org.example.odiya.notification.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +38,12 @@ class FcmPushSenderTest extends BaseServiceTest {
     @MockBean
     private NotificationService notificationService;
 
+    @MockBean
+    private NotificationQueryService notificationQueryService;
+
+    @Autowired
+    private FirebaseMessaging firebaseMessaging;
+
     @BeforeEach
     void setUp() {
         notificationRepository.deleteAll();
@@ -53,9 +60,11 @@ class FcmPushSenderTest extends BaseServiceTest {
                 NotificationStatus.PENDING
         );
         GroupMessage groupMessage = GroupMessage.createGlobalNotice(pendingNotification);
-        // firebaseMessaging mock 설정 추가
+
+        when(notificationQueryService.findById(pendingNotification.getId()))
+                .thenReturn(pendingNotification);
         when(firebaseMessaging.send(any(Message.class)))
-                .thenReturn("message_id");  // 성공 시 반환값 설정
+                .thenReturn("message_id");
 
         // when
         fcmPushSender.sendGroupMessage(groupMessage, pendingNotification);
