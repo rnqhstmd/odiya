@@ -19,7 +19,7 @@ jobs:
     - name: 🐳 JDK 17 세팅
       uses: actions/setup-java@v3
       with:
-        java-version: '21'
+        java-version: '17'
         distribution: 'temurin'
 
     - name: 🐳 gradlew 실행 권한 설정
@@ -30,7 +30,7 @@ jobs:
         KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
         ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      run: ./gradlew --info test -Dspring.profiles.active=test
+      run: ./gradlew test --info --stacktrace -Dspring.profiles.active=test
       
     - name: 🐳 테스트 결과 Report
       uses: EnricoMi/publish-unit-test-result-action@v2
