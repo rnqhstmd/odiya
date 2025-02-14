@@ -65,7 +65,6 @@ class FcmPushSenderTest extends BaseServiceTest {
 
         when(notificationQueryService.findById(pendingNotification.getId()))
                 .thenReturn(pendingNotification);
-
         doAnswer(invocation -> {
             Notification notification = invocation.getArgument(0);
             notification.updateStatusToDone();
@@ -75,13 +74,12 @@ class FcmPushSenderTest extends BaseServiceTest {
 
         // when
         fcmPushSender.sendGroupMessage(groupMessage, pendingNotification);
-        Notification notificationAfterSend = notificationRepository.findById(pendingNotification.getId()).get();
 
         // then
         assertAll(
                 () -> verify(firebaseMessaging, times(1)).send(any(Message.class)),
                 () -> verify(notificationService, times(1)).updateStatusToDone(any(Notification.class)),
-                () -> assertThat(notificationAfterSend.getStatus()).isEqualTo(NotificationStatus.DONE)
+                () -> assertThat(pendingNotification.getStatus()).isEqualTo(NotificationStatus.DONE)
         );
     }
 
