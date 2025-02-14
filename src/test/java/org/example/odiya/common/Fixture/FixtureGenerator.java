@@ -17,9 +17,7 @@ import org.example.odiya.notification.domain.NotificationType;
 import org.example.odiya.notification.repository.NotificationRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 public class FixtureGenerator {
 
@@ -53,6 +51,17 @@ public class FixtureGenerator {
                 .time(now.toLocalTime())
                 .target(Fixture.TARGET_LOCATION)
                 .inviteCode(randomCode)
+                .build());
+    }
+
+    public Meeting generateMeetingBeforeOneHour() {
+        // 현재시간으로부터 3시간 후의 미팅 생성 (아직 1시간 전이 아님)
+        LocalDateTime futureTime = LocalDateTime.now().plusHours(3);
+        return meetingRepository.save(Meeting.builder()
+                .name("테스트 미팅")
+                .date(futureTime.toLocalDate())
+                .time(futureTime.toLocalTime())
+                .target(Fixture.TARGET_LOCATION)
                 .build());
     }
 
@@ -113,6 +122,15 @@ public class FixtureGenerator {
                 .meeting(meeting)
                 .origin(Fixture.ORIGIN_LOCATION)
                 .estimatedTime(30L)
+                .build());
+    }
+
+    public Mate generateLateMate(Meeting meeting, Member member) {
+        return mateRepository.save(Mate.builder()
+                .member(member)
+                .meeting(meeting)
+                .origin(Fixture.ORIGIN_LOCATION)
+                .estimatedTime(3000L)
                 .build());
     }
 
@@ -179,39 +197,5 @@ public class FixtureGenerator {
                 .sendAt(sendAt)
                 .fcmTopic(new FcmTopic(mate.getMeeting()))
                 .build());
-    }
-
-    // DISMISSED 상태의 알림 생성
-    public Notification generateDismissedNotification(Mate mate) {
-        return generateNotification(mate, NotificationType.REMINDER, NotificationStatus.DISMISSED);
-    }
-
-    // DONE 상태의 알림 생성
-    public Notification generateDoneNotification(Mate mate) {
-        return generateNotification(mate, NotificationType.REMINDER, NotificationStatus.DONE);
-    }
-
-    // PENDING 상태의 알림 생성
-    public Notification generatePendingNotification(Mate mate) {
-        return generateNotification(mate, NotificationType.REMINDER, NotificationStatus.PENDING);
-    }
-
-    // 여러 개의 알림 생성
-    public List<Notification> generateNotifications(Mate mate, int count) {
-        return IntStream.range(0, count)
-                .mapToObj(i -> generateNotification(mate))
-                .toList();
-    }
-
-    // 특정 타입의 여러 알림 생성
-    public List<Notification> generateNotifications(
-            Mate mate,
-            NotificationType type,
-            NotificationStatus status,
-            int count
-    ) {
-        return IntStream.range(0, count)
-                .mapToObj(i -> generateNotification(mate, type, status))
-                .toList();
     }
 }
