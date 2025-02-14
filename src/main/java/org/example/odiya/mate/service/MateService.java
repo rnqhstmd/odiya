@@ -94,7 +94,7 @@ public class MateService {
     }
 
     @Transactional
-    public void HurryUpMate(HurryUpRequest request) {
+    public void hurryUpMate(HurryUpRequest request) {
         Mate sender = mateQueryService.findById(request.getSenderId());
         Mate receiver = mateQueryService.findById(request.getReceiverId());
         validateMateStatus(sender, receiver);
