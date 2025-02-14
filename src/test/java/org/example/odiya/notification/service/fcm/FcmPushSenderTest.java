@@ -19,9 +19,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -51,7 +53,7 @@ class FcmPushSenderTest extends BaseServiceTest {
 
     @Test
     @DisplayName("그룹 메시지를 전송하고 알림 상태를 DONE으로 변경한다")
-    void sendGroupMessageSuccess() throws FirebaseMessagingException {
+    void sendGroupMessageSuccess() {
         // given
         Mate mate = fixtureGenerator.generateMate();
         Notification pendingNotification = fixtureGenerator.generateNotification(
@@ -63,16 +65,23 @@ class FcmPushSenderTest extends BaseServiceTest {
 
         when(notificationQueryService.findById(pendingNotification.getId()))
                 .thenReturn(pendingNotification);
-        when(firebaseMessaging.send(any(Message.class)))
-                .thenReturn("message_id");
+
+        doAnswer(invocation -> {
+            Notification notification = invocation.getArgument(0);
+            notification.updateStatusToDone();
+            notificationRepository.save(notification);
+            return null;
+        }).when(notificationService).updateStatusToDone(any(Notification.class));
 
         // when
         fcmPushSender.sendGroupMessage(groupMessage, pendingNotification);
+        Notification notificationAfterSend = notificationRepository.findById(pendingNotification.getId()).get();
 
         // then
         assertAll(
                 () -> verify(firebaseMessaging, times(1)).send(any(Message.class)),
-                () -> verify(notificationService, times(1)).updateStatusToDone(any(Notification.class))
+                () -> verify(notificationService, times(1)).updateStatusToDone(any(Notification.class)),
+                () -> assertThat(notificationAfterSend.getStatus()).isEqualTo(NotificationStatus.DONE)
         );
     }
 
