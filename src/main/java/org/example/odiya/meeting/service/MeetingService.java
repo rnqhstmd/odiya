@@ -109,7 +109,7 @@ public class MeetingService {
             throw new BadRequestException(MEETING_OVERDUE_ERROR);
         }
 
-        if (meeting.checkAnHourBeforeMeetingTime()) {
+        if (meeting.isBeforeOneHourMeetingTime()) {
             throw new BadRequestException(NOT_ONE_HOUR_BEFORE_MEETING_ERROR);
         }
     }
