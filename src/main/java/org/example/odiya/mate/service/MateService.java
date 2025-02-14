@@ -97,24 +97,32 @@ public class MateService {
     public void HurryUpMate(HurryUpRequest request) {
         Mate sender = mateQueryService.findById(request.getSenderId());
         Mate receiver = mateQueryService.findById(request.getReceiverId());
-        validateMateCondition(sender, receiver);
+        validateMateStatus(sender, receiver);
 
         Meeting meeting = meetingQueryService.findById(sender.getMeeting().getId());
-        if (meeting.checkAnHourBeforeMeetingTime()) {
-            throw new BadRequestException(NOT_ONE_HOUR_BEFORE_MEETING_ERROR);
-        }
+        validateMeetingStatus(meeting);
 
         HurryUpNotification hurryUpNotification = new HurryUpNotification(receiver);
         notificationService.sendHurryUpNotification(sender, hurryUpNotification);
     }
 
-    private void validateMateCondition(Mate sender, Mate receiver) {
+    private void validateMateStatus(Mate sender, Mate receiver) {
         if (!sender.getMeeting().getId().equals(receiver.getMeeting().getId())) {
             throw new BadRequestException(NOT_SAME_MEETING_ERROR);
         }
 
         if (!validateLateMate(receiver)) {
             throw new BadRequestException(NOT_LATE_MATE_ERROR);
+        }
+    }
+
+    private void validateMeetingStatus(Meeting meeting) {
+        if (meeting.isOverdue()) {
+            throw new BadRequestException(MEETING_OVERDUE_ERROR);
+        }
+
+        if (meeting.isBeforeOneHourMeetingTime()) {
+            throw new BadRequestException(NOT_ONE_HOUR_BEFORE_MEETING_ERROR);
         }
     }
 
