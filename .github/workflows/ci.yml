@@ -31,13 +31,6 @@ jobs:
         ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: ./gradlew test --info --stacktrace -Dspring.profiles.active=test
-
-    - name: 🐳 테스트 로그 수집
-      if: failure()
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-logs
-        path: build/reports/tests/
       
     - name: 🐳 테스트 결과 Report
       uses: EnricoMi/publish-unit-test-result-action@v2
