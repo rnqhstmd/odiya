@@ -71,8 +71,8 @@ class FcmPushSenderTest extends BaseServiceTest {
 
         // then
         assertAll(
-                () -> verify(firebaseMessaging).send(any(Message.class)),
-                () -> verify(notificationService).updateStatusToDone(any(Notification.class))
+                () -> verify(firebaseMessaging, times(1)).send(any(Message.class)),
+                () -> verify(notificationService).updateStatusToDone(pendingNotification)
         );
     }
 
@@ -81,15 +81,18 @@ class FcmPushSenderTest extends BaseServiceTest {
     void skipDismissedNotification() {
         // given
         Mate mate = fixtureGenerator.generateMate();
-        Notification notification = fixtureGenerator.generateNotification(
+        Notification dismissedNotification = fixtureGenerator.generateNotification(
                 mate,
                 NotificationType.REMINDER,
                 NotificationStatus.DISMISSED
         );
-        GroupMessage groupMessage = GroupMessage.createGlobalNotice(notification);
+        GroupMessage groupMessage = GroupMessage.createGlobalNotice(dismissedNotification);
+
+        when(notificationQueryService.findById(dismissedNotification.getId()))
+                .thenReturn(dismissedNotification);
 
         // when
-        fcmPushSender.sendGroupMessage(groupMessage, notification);
+        fcmPushSender.sendGroupMessage(groupMessage, dismissedNotification);
 
         // then
         assertAll(
