@@ -43,7 +43,7 @@ public enum ErrorType {
     MEETING_NOT_FOUND_ERROR("MEETING_40400", "해당 약속을 찾을 수 없습니다."),
     MEETING_OVERDUE_ERROR("MEETING_40401", "해당 약속은 이미 종료되었습니다."),
     NO_DATE_AND_TIME_ERROR("MEETING_40402", "설정된 약속 시간이 없습니다."),
-    NOT_ONE_HOUR_BEFORE_MEETING_ERROR("MEETING_40000", "설정된 약속 시간보다 1시간 전이 아닙니다."),
+    NOT_ONE_HOUR_BEFORE_MEETING_ERROR("MEETING_40000", "현재 시간이 설정된 약속 시간 1시간 전보다 이전입니다."),
     NOT_SAME_MEETING_ERROR("MEETING_40001", "재촉한 참여자와 재촉 당한 참여자가 같은 약속에 속해있지 않습니다."),
 
     // Mate
