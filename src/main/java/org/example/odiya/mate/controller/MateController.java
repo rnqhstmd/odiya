@@ -39,7 +39,7 @@ public class MateController {
     @PostMapping("/hurry-up")
     public ResponseEntity<Void> hurryUp(@AuthMember Member member,
                                         @Valid @RequestBody HurryUpRequest request) {
-        mateService.hurryUpMate(request);
+        mateService.hurryUpMate(member, request);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
