@@ -42,8 +42,8 @@ class FcmPushSenderTest extends BaseServiceTest {
         notificationRepository.deleteAll();
     }
 
-    @DisplayName("그룹 메시지를 전송하고 알림 상태를 DONE으로 변경한다")
     @Test
+    @DisplayName("그룹 메시지를 전송하고 알림 상태를 DONE으로 변경한다")
     void sendGroupMessageSuccess() throws FirebaseMessagingException {
         // given
         Mate mate = fixtureGenerator.generateMate();
@@ -67,8 +67,8 @@ class FcmPushSenderTest extends BaseServiceTest {
         );
     }
 
-    @DisplayName("DISMISSED 상태의 알림은 메시지를 전송하지 않는다")
     @Test
+    @DisplayName("DISMISSED 상태의 알림은 메시지를 전송하지 않는다")
     void skipDismissedNotification() {
         // given
         Mate mate = fixtureGenerator.generateMate();
@@ -89,8 +89,8 @@ class FcmPushSenderTest extends BaseServiceTest {
         );
     }
 
-    @DisplayName("다이렉트 메시지를 전송한다")
     @Test
+    @DisplayName("다이렉트 메시지를 전송한다")
     void sendDirectMessage() throws FirebaseMessagingException {
         // given
         Message message = mock(Message.class);
@@ -103,8 +103,8 @@ class FcmPushSenderTest extends BaseServiceTest {
         verify(firebaseMessaging).send(message);
     }
 
-    @DisplayName("공지 메시지를 전송한다")
     @Test
+    @DisplayName("공지 메시지를 전송한다")
     void sendNoticeMessage() throws FirebaseMessagingException {
         // given
         Message message = mock(Message.class);

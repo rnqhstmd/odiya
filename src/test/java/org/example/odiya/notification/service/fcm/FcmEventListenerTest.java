@@ -17,8 +17,8 @@ class FcmEventListenerTest extends BaseServiceTest {
     @Autowired
     private FcmPublisher fcmPublisher;
 
-    @DisplayName("SubscribeEvent 이벤트가 발행되면 구독 로직이 실행된다")
     @Test
+    @DisplayName("SubscribeEvent 이벤트가 발행되면 구독 로직이 실행된다")
     void subscribeTopic() {
         // given
         SubscribeEvent subscribeEvent = mock(SubscribeEvent.class);
@@ -30,8 +30,8 @@ class FcmEventListenerTest extends BaseServiceTest {
         verify(fcmEventListener, times(1)).handleSubscribe(eq(subscribeEvent));
     }
 
-    @DisplayName("UnsubscribeEvent 발생 시, 주제 구독 해제 로직을 실행한다")
     @Test
+    @DisplayName("UnsubscribeEvent 발생 시, 주제 구독 해제 로직을 실행한다")
     void handleUnSubscribe() {
         // given
         SubscribeEvent unSubscribeEvent = mock(SubscribeEvent.class);
@@ -57,8 +57,8 @@ class FcmEventListenerTest extends BaseServiceTest {
         verify(fcmEventListener).handlePush(pushEvent);
     }
 
-    @DisplayName("NoticeEvent 발생 시, 공지 알림 발송 로직을 실행한다")
     @Test
+    @DisplayName("NoticeEvent 발생 시, 공지 알림 발송 로직을 실행한다")
     void sendNoticeMessage() {
         // given
         NoticeEvent noticeEvent = mock(NoticeEvent.class);
@@ -70,8 +70,8 @@ class FcmEventListenerTest extends BaseServiceTest {
         verify(fcmEventListener, times(1)).handleNotice(eq(noticeEvent));
     }
 
-    @DisplayName("트랜잭션이 열리지 않으면, 푸시 알림 발송 로직이 실행되지 않는다")
     @Test
+    @DisplayName("트랜잭션이 열리지 않으면, 푸시 알림 발송 로직이 실행되지 않는다")
     void notEventTriggerWhenTransactionNotOpen() {
         PushEvent pushEvent = mock(PushEvent.class);
 
@@ -80,8 +80,8 @@ class FcmEventListenerTest extends BaseServiceTest {
         verifyNoInteractions(fcmEventListener);
     }
 
-    @DisplayName("NudgeEvent 발생 시, 넛지 알림 발송 로직을 실행한다")
     @Test
+    @DisplayName("NudgeEvent 발생 시, 넛지 알림 발송 로직을 실행한다")
     void sendHurryUpMessage() {
         HurryUpEvent nudgeEvent = mock(HurryUpEvent.class);
 

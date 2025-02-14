@@ -45,8 +45,8 @@ class NotificationServiceTest extends BaseServiceTest {
         notificationRepository.deleteAll();
     }
 
-    @DisplayName("알림을 저장하고 스케줄링한다")
     @Test
+    @DisplayName("알림을 저장하고 스케줄링한다")
     void saveAndScheduleNotification() {
         // given
         Mate mate = fixtureGenerator.generateMate();
@@ -67,8 +67,8 @@ class NotificationServiceTest extends BaseServiceTest {
         assertThat(notificationRepository.findAll()).hasSize(1);
     }
 
-    @DisplayName("REMINDER 타입의 알림 상태를 DONE으로 변경한다")
     @Test
+    @DisplayName("REMINDER 타입의 알림 상태를 DONE으로 변경한다")
     void updateReminderStatusToDone() {
         // given
         Mate mate = fixtureGenerator.generateMate();
@@ -85,8 +85,8 @@ class NotificationServiceTest extends BaseServiceTest {
         assertThat(notification.getStatus()).isEqualTo(NotificationStatus.DONE);
     }
 
-    @DisplayName("REMINDER가 아닌 알림은 상태가 변경되지 않는다")
     @Test
+    @DisplayName("REMINDER가 아닌 알림은 상태가 변경되지 않는다")
     void notUpdateNonReminderStatus() {
         // given
         Mate mate = fixtureGenerator.generateMate();
@@ -103,8 +103,8 @@ class NotificationServiceTest extends BaseServiceTest {
         assertThat(notification.getStatus()).isEqualTo(NotificationStatus.PENDING);
     }
 
-    @DisplayName("재촉하기 알림을 저장하고 이벤트를 발행한다")
     @Test
+    @DisplayName("재촉하기 알림을 저장하고 이벤트를 발행한다")
     void sendHurryUpNotification() {
         // given
         Meeting meeting = fixtureGenerator.generateMeeting();
@@ -120,8 +120,8 @@ class NotificationServiceTest extends BaseServiceTest {
         assertThat(notificationRepository.findAll()).hasSize(1);
     }
 
-    @DisplayName("토픽 구독 이벤트를 발행한다")
     @Test
+    @DisplayName("토픽 구독 이벤트를 발행한다")
     void subscribeTopic() {
         // given
         Meeting meeting = fixtureGenerator.generateMeeting();
@@ -135,8 +135,8 @@ class NotificationServiceTest extends BaseServiceTest {
         verify(fcmPublisher).publishWithTransaction(any(SubscribeEvent.class));
     }
 
-    @DisplayName("토픽 구독 해제 이벤트를 발행한다")
     @Test
+    @DisplayName("토픽 구독 해제 이벤트를 발행한다")
     void unsubscribeTopic() {
         // given
         Meeting meeting = fixtureGenerator.generateMeeting();
