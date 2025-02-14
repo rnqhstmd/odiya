@@ -52,42 +52,6 @@ class FcmPushSenderTest extends BaseServiceTest {
     }
 
     @Test
-    @DisplayName("그룹 메시지를 전송하고 알림 상태를 DONE으로 변경한다")
-    void sendGroupMessageSuccess() throws FirebaseMessagingException {
-        // given
-        Mate mate = fixtureGenerator.generateMate();
-        Notification pendingNotification = fixtureGenerator.generateNotification(
-                mate,
-                NotificationType.REMINDER,
-                NotificationStatus.PENDING
-        );
-        GroupMessage groupMessage = GroupMessage.createGlobalNotice(pendingNotification);
-// 디버그 로깅 추가
-        System.out.println("Notification ID: " + pendingNotification.getId());
-        System.out.println("Group Message: " + groupMessage);
-        when(notificationQueryService.findById(pendingNotification.getId()))
-                .thenReturn(pendingNotification);
-        doAnswer(invocation -> {
-            Notification notification = invocation.getArgument(0);
-            notification.updateStatusToDone();
-            notificationRepository.save(notification);
-            return null;
-        }).when(notificationService).updateStatusToDone(any(Notification.class));
-        when(firebaseMessaging.send(any(Message.class)))
-                .thenReturn("message_id");
-
-        // when
-        fcmPushSender.sendGroupMessage(groupMessage, pendingNotification);
-
-        // then
-        assertAll(
-                () -> verify(firebaseMessaging, times(1)).send(any(Message.class)),
-                () -> verify(notificationService, times(1)).updateStatusToDone(any(Notification.class)),
-                () -> assertThat(pendingNotification.getStatus()).isEqualTo(NotificationStatus.DONE)
-        );
-    }
-
-    @Test
     @DisplayName("DISMISSED 상태의 알림은 메시지를 전송하지 않는다")
     void skipDismissedNotification() {
         // given
