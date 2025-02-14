@@ -81,7 +81,7 @@ public class Meeting extends BaseEntity {
         return target.getCoordinates();
     }
 
-    public boolean checkAnHourBeforeMeetingTime() {
-        return !LocalDateTime.now().isBefore(getMeetingTime().minusHours(1));
+    public boolean isBeforeOneHourMeetingTime() {
+        return LocalDateTime.now().isBefore(getMeetingTime().minusHours(1));
     }
 }
