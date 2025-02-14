@@ -15,8 +15,9 @@ import static org.example.odiya.common.exception.type.ErrorType.MATE_ETA_NOT_FOU
 public enum EtaStatus {
     MISSING((eta, meeting) -> eta.isMissing()),
     ARRIVED((eta, meeting) -> eta.isArrived()),
-    ARRIVAL_SOON((eta, meeting) -> eta.isArrivalSoon(meeting) && !meeting.isEnd()),
-    LATE((eta, meeting) -> !eta.isArrivalSoon(meeting) && meeting.isEnd());
+    ARRIVAL_EXPECTED((eta, meeting) -> eta.isArrivalSoon(meeting) && !meeting.isEnd()),
+    LATE((eta, meeting) -> !eta.isArrivalSoon(meeting) && meeting.isEnd()),
+    LATE_EXPECTED((eta, meeting) -> !eta.isArrivalSoon(meeting) && !meeting.isEnd());
 
     private final BiPredicate<Eta, Meeting> condition;
 
