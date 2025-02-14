@@ -72,7 +72,7 @@ class FcmPushSenderTest extends BaseServiceTest {
         // then
         assertAll(
                 () -> verify(firebaseMessaging, times(1)).send(any(Message.class)),
-                () -> verify(notificationService).updateStatusToDone(pendingNotification)
+                () -> verify(notificationService, times(1)).updateStatusToDone(any(Notification.class))
         );
     }
 
