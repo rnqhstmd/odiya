@@ -122,7 +122,6 @@ class MeetingServiceTest extends BaseServiceTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getMeetings()).isNotEmpty();
-        assertThat(response.getMeetings().size()).isGreaterThan(0);
     }
 
     @Test
@@ -182,7 +181,7 @@ class MeetingServiceTest extends BaseServiceTest {
     }
 
     @Test
-    @DisplayName("모임 시간이 지난 경우 예외를 발생시킨다")
+    @DisplayName("약속 시간이 지난 경우 예외를 발생시킨다")
     void throwExceptionWhenMeetingIsOverdue() {
         // Given
         Meeting overdueMeeting = fixtureGenerator.generateOverdueMeeting();
