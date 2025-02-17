@@ -8,10 +8,7 @@ import org.example.odiya.notification.domain.FcmTopic;
 import org.example.odiya.notification.domain.Notification;
 import org.example.odiya.notification.domain.message.DirectMessage;
 import org.example.odiya.notification.domain.message.GroupMessage;
-import org.example.odiya.notification.service.event.HurryUpEvent;
-import org.example.odiya.notification.service.event.NoticeEvent;
-import org.example.odiya.notification.service.event.PushEvent;
-import org.example.odiya.notification.service.event.SubscribeEvent;
+import org.example.odiya.notification.service.event.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -20,6 +17,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -59,6 +57,22 @@ public class FcmEventListener {
         log.info("푸시 알림 전송 - id: {}, type: {}",
                 notification.getId(),
                 notification.getType());
+    }
+
+    @Async("fcmExecutor")
+    @EventListener
+    public void handleLeave(LeaveEvent event) {
+        Notification notification = event.getNotification();
+        List<DirectMessage> directMessages = event.getDirectMessages();
+
+        for (DirectMessage directMessage : directMessages) {
+            fcmPushSender.sendDirectMessage(directMessage);
+        }
+
+        log.info("퇴장 알림 전송 완료 - id: {}, type: {}, 수신자 수: {}",
+                notification.getId(),
+                notification.getType(),
+                directMessages.size());
     }
 
     @Async("fcmExecutor")

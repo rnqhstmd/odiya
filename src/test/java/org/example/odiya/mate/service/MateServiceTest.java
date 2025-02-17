@@ -3,6 +3,7 @@ package org.example.odiya.mate.service;
 import org.example.odiya.common.BaseTest.BaseServiceTest;
 import org.example.odiya.common.exception.BadRequestException;
 import org.example.odiya.common.exception.ConflictException;
+import org.example.odiya.common.exception.NotFoundException;
 import org.example.odiya.eta.domain.Eta;
 import org.example.odiya.eta.domain.EtaStatus;
 import org.example.odiya.eta.service.EtaService;
@@ -16,6 +17,7 @@ import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.meeting.repository.MeetingRepository;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.repository.MemberRepository;
+import org.example.odiya.notification.domain.NotificationStatus;
 import org.example.odiya.notification.domain.types.HurryUpNotification;
 import org.example.odiya.notification.service.NotificationService;
 import org.example.odiya.route.domain.RouteInfo;
@@ -28,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -102,7 +106,7 @@ class MateServiceTest extends BaseServiceTest {
 
         // Then
         assertThat(response).isNotNull();
-        Mate savedMate = mateRepository.findByMemberIdAndMeetingId(newMember.getId(), meeting.getId())
+        Mate savedMate = mateRepository.findByMeetingIdAndMemberId(newMember.getId(), meeting.getId())
                 .orElseThrow();
         assertThat(savedMate.getMember().getId()).isEqualTo(newMember.getId());
         assertThat(savedMate.getMeeting().getId()).isEqualTo(meeting.getId());
@@ -132,7 +136,7 @@ class MateServiceTest extends BaseServiceTest {
     }
 
     @Test
-    @DisplayName("재촉에 성공한다")
+    @DisplayName("설정된 약속시간 1시간 전부터 재촉에 성공한다")
     void hurryUpMate_Success() {
         // Given
         when(etaService.findEtaStatus(any(Mate.class))).thenReturn(EtaStatus.LATE);
@@ -211,5 +215,23 @@ class MateServiceTest extends BaseServiceTest {
         // When & Then
         assertThatThrownBy(() -> mateService.hurryUpMate(member, earlyRequest))
                 .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    @DisplayName("약속 탈퇴에 성공한다")
+    void leaveMeeting_Success() {
+        // Given
+        Member newMember = fixtureGenerator.generateMember();
+        Meeting newMeeting = fixtureGenerator.generateMeeting();
+        Mate mate = fixtureGenerator.generateMate(newMeeting, newMember);
+        fixtureGenerator.generateNotification(mate, LocalDateTime.now().plusHours(1), NotificationStatus.PENDING);
+        fixtureGenerator.generateNotification(mate, LocalDateTime.now().minusHours(1), NotificationStatus.DONE);
+
+        // When
+        mateService.leaveMeeting(newMeeting.getId(), newMember);
+
+        // Then
+        assertThatThrownBy(() -> mateService.leaveMeeting(newMeeting.getId(), newMember))
+                .isInstanceOf(NotFoundException.class);
     }
 }

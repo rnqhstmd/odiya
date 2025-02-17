@@ -1,6 +1,5 @@
 package org.example.odiya.common.BaseTest;
 
-import com.google.firebase.messaging.FirebaseMessaging;
 import org.example.odiya.common.Fixture.DtoGenerator;
 import org.example.odiya.common.Fixture.FixtureGenerator;
 import org.example.odiya.common.config.FixtureGeneratorConfig;

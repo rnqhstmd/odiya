@@ -6,6 +6,10 @@ import org.example.odiya.common.domain.BaseEntity;
 import org.example.odiya.meeting.domain.Location;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.member.domain.Member;
+import org.example.odiya.notification.domain.Notification;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +35,10 @@ public class Mate extends BaseEntity {
 
     @Column
     private long estimatedTime;
+
+    @OneToMany(mappedBy = "mate", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private List<Notification> notifications = new ArrayList<>();
 
     public Mate(Member member, Meeting meeting) {
         this.member = member;

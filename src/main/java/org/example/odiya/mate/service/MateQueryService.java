@@ -38,4 +38,9 @@ public class MateQueryService {
     public int countByMeetingId(Long meetingId) {
         return mateRepository.countByMeetingId(meetingId);
     }
+
+    public Mate findByMemberIdAndMeetingId(Long memberId, Long meetingId) {
+        return mateRepository.findByMeetingIdAndMemberId(meetingId, memberId)
+                .orElseThrow(() -> new NotFoundException(MATE_NOT_FOUND_ERROR));
+    }
 }
