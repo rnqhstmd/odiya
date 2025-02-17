@@ -152,7 +152,7 @@ class NotificationServiceTest extends BaseServiceTest {
     }
 
     @Test
-    @DisplayName("퇴장 알림 전송에 성공한다")
+    @DisplayName("약속 퇴장 이벤트를 발행한다")
     void sendLeaveNotification_Success() {
         // Given
         Member newMember = fixtureGenerator.generateMember();
