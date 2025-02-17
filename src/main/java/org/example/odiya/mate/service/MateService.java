@@ -134,4 +134,13 @@ public class MateService {
         EtaStatus etaStatus = etaService.findEtaStatus(receiver);
         return etaStatus == EtaStatus.LATE;
     }
+
+    @Transactional
+    public void leaveMeeting(Long meetingId, Member member) {
+        Mate mate = mateQueryService.findByMemberIdAndMeetingId(meetingId, member.getId());
+        notificationService.sendLeaveNotification(mate);
+        notificationService.updateAllStatusToDismissedByMateIdAndSendAtAfterNow(mate.getId());
+        notificationService.unsubscribeTopic(mate.getMeeting(), member.getDeviceToken());
+        mateRepository.delete(mate);
+    }
 }
