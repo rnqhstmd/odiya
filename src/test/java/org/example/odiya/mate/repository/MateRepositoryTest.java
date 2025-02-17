@@ -70,12 +70,12 @@ class MateRepositoryTest extends BaseRepositoryTest {
 
     @Test
     @DisplayName("멤버와 약속으로 참여 정보 조회")
-    void findByMemberIdAndMeetingId_WhenExists_ReturnsMate() {
+    void findByMemberId_AndMeetingIdv1_WhenExists_ReturnsMate() {
         // Given
         Mate savedMate = fixtureGenerator.generateMate(meeting, member);
 
         // When
-        Optional<Mate> foundMate = mateRepository.findByMemberIdAndMeetingId(member.getId(), meeting.getId());
+        Optional<Mate> foundMate = mateRepository.findByMeetingIdAndMemberId(member.getId(), meeting.getId());
 
         // Then
         assertThat(foundMate).isPresent();
@@ -86,13 +86,13 @@ class MateRepositoryTest extends BaseRepositoryTest {
 
     @Test
     @DisplayName("존재하지 않는 참여 정보 조회")
-    void findByMemberIdAndMeetingId_WhenNotExists_ReturnsEmpty() {
+    void findByMemberId_AndMeetingIdv1_WhenNotExists_ReturnsEmpty() {
         // Given
         Long nonExistentMemberId = 999L;
         Long nonExistentMeetingId = 999L;
 
         // When
-        Optional<Mate> foundMate = mateRepository.findByMemberIdAndMeetingId(nonExistentMemberId, nonExistentMeetingId);
+        Optional<Mate> foundMate = mateRepository.findByMeetingIdAndMemberId(nonExistentMemberId, nonExistentMeetingId);
 
         // Then
         assertThat(foundMate).isEmpty();
