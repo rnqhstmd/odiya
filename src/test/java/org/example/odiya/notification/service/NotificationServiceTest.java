@@ -4,6 +4,7 @@ import org.example.odiya.common.BaseTest.BaseServiceTest;
 import org.example.odiya.mate.domain.Mate;
 import org.example.odiya.meeting.domain.Meeting;
 import org.example.odiya.member.domain.DeviceToken;
+import org.example.odiya.member.domain.Member;
 import org.example.odiya.notification.domain.FcmTopic;
 import org.example.odiya.notification.domain.Notification;
 import org.example.odiya.notification.domain.NotificationStatus;
@@ -11,6 +12,7 @@ import org.example.odiya.notification.domain.NotificationType;
 import org.example.odiya.notification.domain.types.HurryUpNotification;
 import org.example.odiya.notification.repository.NotificationRepository;
 import org.example.odiya.notification.service.event.HurryUpEvent;
+import org.example.odiya.notification.service.event.LeaveEvent;
 import org.example.odiya.notification.service.event.SubscribeEvent;
 import org.example.odiya.notification.service.fcm.FcmPublisher;
 import org.junit.jupiter.api.BeforeEach;
@@ -147,5 +149,26 @@ class NotificationServiceTest extends BaseServiceTest {
 
         // then
         verify(fcmPublisher).publish(any(SubscribeEvent.class));
+    }
+
+    @Test
+    @DisplayName("퇴장 알림 전송에 성공한다")
+    void sendLeaveNotification_Success() {
+        // Given
+        Member newMember = fixtureGenerator.generateMember();
+        Meeting newMeeting = fixtureGenerator.generateMeeting();
+        Mate mate = fixtureGenerator.generateMate(newMeeting, newMember);
+
+        Member otherMember1 = fixtureGenerator.generateMember();
+        Member otherMember2 = fixtureGenerator.generateMember();
+        fixtureGenerator.generateMate(newMeeting, otherMember1);
+        fixtureGenerator.generateMate(newMeeting, otherMember2);
+
+        // When
+        notificationService.sendLeaveNotification(mate);
+
+        // Then
+        verify(fcmPublisher).publishWithTransaction(any(LeaveEvent.class));
+        assertThat(notificationRepository.findAll()).hasSize(1);
     }
 }
