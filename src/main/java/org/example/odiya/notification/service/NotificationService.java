@@ -9,7 +9,9 @@ import org.example.odiya.notification.domain.FcmTopic;
 import org.example.odiya.notification.domain.Notification;
 import org.example.odiya.notification.domain.NotificationType;
 import org.example.odiya.notification.domain.types.HurryUpNotification;
+import org.example.odiya.notification.domain.types.LeaveNotification;
 import org.example.odiya.notification.service.event.HurryUpEvent;
+import org.example.odiya.notification.service.event.LeaveEvent;
 import org.example.odiya.notification.service.event.PushEvent;
 import org.example.odiya.notification.service.event.SubscribeEvent;
 import org.example.odiya.notification.repository.NotificationRepository;
@@ -67,6 +69,13 @@ public class NotificationService {
         fcmPublisher.publishWithTransaction(new HurryUpEvent(this, sender, savedNotification));
     }
 
+    @Transactional
+    public void sendLeaveNotification(Mate mate) {
+        LeaveNotification leaveNotification = new LeaveNotification(mate);
+        Notification savedNotification = saveNotification(leaveNotification.toNotification());
+        fcmPublisher.publishWithTransaction(new LeaveEvent(this, mate, savedNotification));
+    }
+
     public void subscribeTopic(DeviceToken deviceToken, FcmTopic fcmTopic) {
         fcmPublisher.publishWithTransaction(new SubscribeEvent(this, deviceToken, fcmTopic));
     }
@@ -85,5 +94,9 @@ public class NotificationService {
                             notification.getMate().getMember().getDeviceToken()
                     ));
         }
+    }
+
+    public void updateAllStatusToDismissedByMateIdAndSendAtAfterNow(long mateId){
+        notificationRepository.updateAllStatusToDismissedByMateIdAndSendAtAfterNow(mateId, LocalDateTime.now());
     }
 }
