@@ -6,7 +6,7 @@ import org.example.odiya.common.exception.InternalServerException;
 import org.example.odiya.common.exception.type.ErrorType;
 import org.example.odiya.meeting.domain.Coordinates;
 import org.example.odiya.route.config.RouteClientProperties;
-import org.example.odiya.route.domain.ClientType;
+import org.example.odiya.apicall.domain.ClientType;
 import org.example.odiya.route.domain.RouteInfo;
 import org.example.odiya.route.dto.response.GoogleDirectionResponse;
 import org.springframework.stereotype.Service;
