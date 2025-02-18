@@ -31,7 +31,7 @@ public class ApiCall extends BaseEntity {
     private Boolean enabled = true;
 
     public ApiCall(ClientType clientType, Integer count, LocalDate date) {
-        this(null, clientType, date, count, false);
+        this(null, clientType, date, count, true);
     }
 
     public void increaseCount() {
