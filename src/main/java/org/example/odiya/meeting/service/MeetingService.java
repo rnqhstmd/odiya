@@ -95,7 +95,7 @@ public class MeetingService {
     }
 
     @Async
-    protected void updateEtasAsync(List<Eta> etas, Meeting meeting) {
+    public void updateEtasAsync(List<Eta> etas, Meeting meeting) {
         List<CompletableFuture<EtaUpdateResult>> futures = etas.stream()
                 .map(eta -> etaService.calculateEtaAsync(eta, meeting))
                 .toList();
