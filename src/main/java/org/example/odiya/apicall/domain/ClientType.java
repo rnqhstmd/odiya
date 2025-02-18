@@ -14,11 +14,11 @@ public enum ClientType {
     ;
 
     private final UnaryOperator<LocalDate> resetDateOperation;
-    private final int dailyLimit;
+    private final int monthlyLimit;
 
-    ClientType(UnaryOperator<LocalDate> resetDateOperation, int dailyLimit) {
+    ClientType(UnaryOperator<LocalDate> resetDateOperation, int monthlyLimit) {
         this.resetDateOperation = resetDateOperation;
-        this.dailyLimit = dailyLimit;
+        this.monthlyLimit = monthlyLimit;
     }
 
     public LocalDate determineResetDate(LocalDate date) {
