@@ -2,10 +2,12 @@ package org.example.odiya.place.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.odiya.apicall.domain.ClientType;
+import org.example.odiya.apicall.service.ApiCallService;
 import org.example.odiya.common.exception.InternalServerException;
 import org.example.odiya.common.exception.NotFoundException;
-import org.example.odiya.place.dto.response.MapSearchResponse;
-import org.springframework.beans.factory.annotation.Value;
+import org.example.odiya.place.config.PlaceClientProperties;
+import org.example.odiya.place.dto.response.PlaceSearchResponse;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -20,41 +22,38 @@ import static org.example.odiya.common.exception.type.ErrorType.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PlaceService {
+public class KakaoPlaceSearchClient implements PlaceSearchClient {
 
-    @Value("${kakao.api.key}")
-    private String key;
-
-    @Value("${kakao.api.host}")
-    private String host;
-
-    @Value("${kakao.api.keyword-search-path}")
-    private String searchPath;
-
+    private final ApiCallService apiCallService;
+    private final PlaceClientProperties properties;
     private final RestTemplate restTemplate;
 
-    public MapSearchResponse searchByKeyword(String query) {
+    @Override
+    public PlaceSearchResponse searchByKeyword(String query) {
+        apiCallService.validateClientsAvailable();
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "KakaoAK " + key);
+            headers.set("Authorization", "KakaoAK " + properties.getKakao().key());
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             URI uri = UriComponentsBuilder
-                    .fromUriString(host)
-                    .path(searchPath)
+                    .fromUriString(properties.getKakao().host())
+                    .path(properties.getKakao().paths().get("keyword-search"))
                     .queryParam("query", query)
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUri();
 
-            ResponseEntity<MapSearchResponse> response = restTemplate.exchange(
+            ResponseEntity<PlaceSearchResponse> response = restTemplate.exchange(
                     uri,
                     HttpMethod.GET,
                     entity,
-                    MapSearchResponse.class
+                    PlaceSearchResponse.class
             );
+
+            apiCallService.recordApiCall(ClientType.KAKAO);
 
             if (response.getBody() == null || response.getBody().getDocuments().isEmpty()) {
                 throw new NotFoundException(SEARCH_RESULT_NOT_FOUND_ERROR);
@@ -63,7 +62,12 @@ public class PlaceService {
 
         } catch (RestClientException e) {
             log.error("카카오 API 호출 중 오류 발생", e);
-            throw new InternalServerException(REST_TEMPLATE_ERROR, "카카오 API 응답이 null입니다. "+e.getMessage());
+            throw new InternalServerException(REST_TEMPLATE_ERROR, "카카오 API 응답이 null입니다. " + e.getMessage());
         }
+    }
+
+    @Override
+    public ClientType getClientType() {
+        return ClientType.KAKAO;
     }
 }

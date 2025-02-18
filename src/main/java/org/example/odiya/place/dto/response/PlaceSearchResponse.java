@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class MapSearchResponse {
+public class PlaceSearchResponse {
 
     private List<Document> documents;
     private Meta meta;

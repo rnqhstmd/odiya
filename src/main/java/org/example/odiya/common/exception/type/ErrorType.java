@@ -59,21 +59,23 @@ public enum ErrorType {
     // Notification
     NOTIFICATION_NOT_FOUND_ERROR("NOTIFICATION_40400", "해당 알림을 찾을 수 없습니다."),
 
-    // Route
-    SEARCH_ROUTE_NOT_FOUND_ERROR("ROUTE_40400", "경로를 찾을 수 없습니다."),
-    INVALID_ROUTE_REQUEST_ERROR("ROUTE_40000", "경로 요청이 잘못되었습니다."),
-    REQUEST_DENIED_ERROR("ROUTE_40003", "요청이 거부되었습니다."),
+    // Client
+    SEARCH_ROUTE_NOT_FOUND_ERROR("CLIENT_40400", "경로를 찾을 수 없습니다."),
+    INVALID_ROUTE_REQUEST_ERROR("CLIENT_40000", "경로 요청이 잘못되었습니다."),
+    REQUEST_DENIED_ERROR("CLIENT_40003", "요청이 거부되었습니다."),
+    CLIENT_TYPE_NOT_FOUND_ERROR("CLIENT_40401", "해당 클라이언트 타입을 찾을 수 없습니다."),
 
     // Internal Server
     INTERNAL_SERVER_ERROR("INTERNAL_50000", "서버 내부 에러입니다."),
     EXTERNAL_API_ERROR("INTERNAL_50001", "외부 API 호출 에러입니다."),
     REST_TEMPLATE_ERROR("INTERNAL_50002", "RestTemplate 에러입니다."),
-    TOO_MANY_REQUEST_ERROR("INTERNAL_50003", "API 호출 한도를 초과했습니다."),
+    TOO_MANY_REQUEST_ERROR("INTERNAL_50003", "외부 API 일일 호출 한도를 초과했습니다."),
     FIREBASE_INIT_ERROR("INTERNAL_50004", "Firebase 초기화 에러입니다."),
     FILE_PROCESS_ERROR("INTERNAL_50005", "파일 처리 중 에러가 발생했습니다."),
     FIREBASE_SUBSCRIBE_ERROR("INTERNAL_50006", "Firebase Subscribe 중 에러가 발생했습니다."),
     FIREBASE_UNSUBSCRIBE_ERROR("INTERNAL_50007", "Firebase Unsubscribe 중 에러가 발생했습니다."),
     FIREBASE_SEND_ERROR("INTERNAL_50008", "Firebase Send 중 에러가 발생했습니다."),
+    API_CALL_DISABLED_ERROR("INTERNAL_50009", "API 호출이 비활성화 되었습니다."),
 
     // Validation
     NOT_NULL_VALID_ERROR("VALID_90000", "필수값이 누락되었습니다."),
