@@ -1,6 +1,9 @@
 package org.example.odiya.common.Fixture;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.example.odiya.apicall.domain.ApiCall;
+import org.example.odiya.apicall.domain.ClientType;
+import org.example.odiya.apicall.repository.ApiCallRepository;
 import org.example.odiya.eta.domain.Eta;
 import org.example.odiya.eta.repository.EtaRepository;
 import org.example.odiya.mate.domain.Mate;
@@ -16,6 +19,7 @@ import org.example.odiya.notification.domain.NotificationStatus;
 import org.example.odiya.notification.domain.NotificationType;
 import org.example.odiya.notification.repository.NotificationRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -26,19 +30,22 @@ public class FixtureGenerator {
     private final MateRepository mateRepository;
     private final EtaRepository etaRepository;
     private final NotificationRepository notificationRepository;
+    private final ApiCallRepository apiCallRepository;
 
     public FixtureGenerator(
             MemberRepository memberRepository,
             MeetingRepository meetingRepository,
             MateRepository mateRepository,
             EtaRepository etaRepository,
-            NotificationRepository notificationRepository
+            NotificationRepository notificationRepository,
+            ApiCallRepository apiCallRepository
     ) {
         this.memberRepository = memberRepository;
         this.meetingRepository = meetingRepository;
         this.mateRepository = mateRepository;
         this.etaRepository = etaRepository;
         this.notificationRepository = notificationRepository;
+        this.apiCallRepository = apiCallRepository;
     }
 
     // Meeting 생성
@@ -196,6 +203,22 @@ public class FixtureGenerator {
                 .status(status)
                 .sendAt(sendAt)
                 .fcmTopic(new FcmTopic(mate.getMeeting()))
+                .build());
+    }
+
+    public ApiCall generateApiCall(ClientType clientType) {
+        return apiCallRepository.save(ApiCall.builder()
+                .clientType(clientType)
+                .date(LocalDate.now())
+                .count(0)
+                .build());
+    }
+
+    public ApiCall generateApiCall(ClientType clientType, LocalDate date, int count) {
+        return apiCallRepository.save(ApiCall.builder()
+                .clientType(clientType)
+                .date(date)
+                .count(count)
                 .build());
     }
 }
