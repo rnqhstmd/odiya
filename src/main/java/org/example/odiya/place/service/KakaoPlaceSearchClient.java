@@ -22,12 +22,13 @@ import static org.example.odiya.common.exception.type.ErrorType.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KakaoPlaceSearchClient {
+public class KakaoPlaceSearchClient implements PlaceSearchClient {
 
     private final ApiCallService apiCallService;
     private final PlaceClientProperties properties;
     private final RestTemplate restTemplate;
 
+    @Override
     public PlaceSearchResponse searchByKeyword(String query) {
         apiCallService.validateClientsAvailable();
         try {
@@ -61,7 +62,12 @@ public class KakaoPlaceSearchClient {
 
         } catch (RestClientException e) {
             log.error("카카오 API 호출 중 오류 발생", e);
-            throw new InternalServerException(REST_TEMPLATE_ERROR, "카카오 API 응답이 null입니다. "+e.getMessage());
+            throw new InternalServerException(REST_TEMPLATE_ERROR, "카카오 API 응답이 null입니다. " + e.getMessage());
         }
+    }
+
+    @Override
+    public ClientType getClientType() {
+        return ClientType.KAKAO;
     }
 }
