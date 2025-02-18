@@ -10,7 +10,7 @@ public enum ClientType {
 
     GOOGLE(date -> date.withDayOfMonth(1), 100),
     TMAP(date -> date.withDayOfMonth(1), 100),
-    KAKAO(date -> date.withDayOfMonth(1), 100);
+    KAKAO(date -> date.withDayOfMonth(1), 100)
     ;
 
     private final UnaryOperator<LocalDate> resetDateOperation;
