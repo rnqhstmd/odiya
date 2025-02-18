@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.odiya.apicall.domain.ApiCall;
 import org.example.odiya.apicall.service.ApiCallService;
-import org.example.odiya.route.service.RouteClient;
+import org.example.odiya.apicall.service.ApiClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +16,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientApiCallScheduler {
 
-    private final List<RouteClient> routeClients;
+    private final List<ApiClient> apiClients;
     private final ApiCallService apiCallService;
 
     @Scheduled(cron = "0 59 23 * * *", zone = "Asia/Seoul")
     public void initializeClientApiCalls() {
         LocalDate nextDay = LocalDate.now().plusDays(1);
-        routeClients.stream()
+        apiClients.stream()
                 .map(client -> apiCallService.findOrSaveTodayApiCallByClientType(client.getClientType()))
                 .map(apiCall -> new ApiCall(apiCall.getClientType(), 0, nextDay))
                 .forEach(apiCallService::saveApiCall);
