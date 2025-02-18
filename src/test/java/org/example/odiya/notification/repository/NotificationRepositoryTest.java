@@ -8,7 +8,6 @@ import org.example.odiya.notification.domain.Notification;
 import org.example.odiya.notification.domain.NotificationStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,9 +15,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NotificationRepositoryTest extends BaseRepositoryTest {
-
-    @Autowired
-    private NotificationRepository notificationRepository;
 
     @Test
     @DisplayName("특정 Mate의 미래 알림들의 상태를 DISMISSED로 변경한다")
@@ -50,6 +46,4 @@ class NotificationRepositoryTest extends BaseRepositoryTest {
                 .filter(noti -> noti.getSendAt().isBefore(now))
                 .forEach(noti -> assertThat(noti.getStatus()).isEqualTo(NotificationStatus.PENDING));
     }
-
-
 }
