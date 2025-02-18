@@ -2,11 +2,12 @@ package org.example.odiya.place.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.odiya.apicall.domain.ClientType;
+import org.example.odiya.apicall.service.ApiCallService;
 import org.example.odiya.common.exception.InternalServerException;
 import org.example.odiya.common.exception.NotFoundException;
 import org.example.odiya.place.config.PlaceClientProperties;
 import org.example.odiya.place.dto.response.PlaceSearchResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -23,10 +24,12 @@ import static org.example.odiya.common.exception.type.ErrorType.*;
 @RequiredArgsConstructor
 public class KakaoPlaceSearchClient {
 
+    private final ApiCallService apiCallService;
     private final PlaceClientProperties properties;
     private final RestTemplate restTemplate;
 
     public PlaceSearchResponse searchByKeyword(String query) {
+        apiCallService.validateClientsAvailable();
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -48,6 +51,8 @@ public class KakaoPlaceSearchClient {
                     entity,
                     PlaceSearchResponse.class
             );
+
+            apiCallService.recordApiCall(ClientType.KAKAO);
 
             if (response.getBody() == null || response.getBody().getDocuments().isEmpty()) {
                 throw new NotFoundException(SEARCH_RESULT_NOT_FOUND_ERROR);
