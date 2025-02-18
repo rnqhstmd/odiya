@@ -1,5 +1,6 @@
 package org.example.odiya.common.config;
 
+import org.example.odiya.apicall.repository.ApiCallRepository;
 import org.example.odiya.common.Fixture.FixtureGenerator;
 import org.example.odiya.eta.repository.EtaRepository;
 import org.example.odiya.mate.repository.MateRepository;
@@ -20,14 +21,16 @@ public class FixtureGeneratorConfig {
             MeetingRepository meetingRepository,
             MateRepository mateRepository,
             EtaRepository etaRepository,
-            NotificationRepository notificationRepository
+            NotificationRepository notificationRepository,
+            ApiCallRepository apiCallRepository
     ) {
         return new FixtureGenerator(
                 memberRepository,
                 meetingRepository,
                 mateRepository,
                 etaRepository,
-                notificationRepository
+                notificationRepository,
+                apiCallRepository
         );
     }
 }
