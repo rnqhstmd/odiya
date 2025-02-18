@@ -75,6 +75,7 @@ public enum ErrorType {
     FIREBASE_SUBSCRIBE_ERROR("INTERNAL_50006", "Firebase Subscribe 중 에러가 발생했습니다."),
     FIREBASE_UNSUBSCRIBE_ERROR("INTERNAL_50007", "Firebase Unsubscribe 중 에러가 발생했습니다."),
     FIREBASE_SEND_ERROR("INTERNAL_50008", "Firebase Send 중 에러가 발생했습니다."),
+    API_CALL_DISABLED_ERROR("INTERNAL_50009", "API 호출이 비활성화 되었습니다."),
 
     // Validation
     NOT_NULL_VALID_ERROR("VALID_90000", "필수값이 누락되었습니다."),
