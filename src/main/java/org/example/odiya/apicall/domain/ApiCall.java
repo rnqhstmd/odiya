@@ -28,10 +28,15 @@ public class ApiCall extends BaseEntity {
     private Integer count;
 
     @Column
+    @Builder.Default
     private Boolean enabled = true;
 
     public ApiCall(ClientType clientType, Integer count, LocalDate date) {
         this(null, clientType, date, count, true);
+    }
+
+    public ApiCall(ClientType clientType, LocalDate today, int count, boolean enabled) {
+        this(null, clientType, today, count, enabled);
     }
 
     public void increaseCount() {
