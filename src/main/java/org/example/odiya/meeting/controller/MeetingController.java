@@ -1,6 +1,7 @@
 package org.example.odiya.meeting.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class MeetingController {
 
     @Operation(summary = "약속 생성 API", description = "사용자가 약속을 생성합니다.")
     @PostMapping
-    public ResponseEntity<MeetingCreateResponse> createMeeting(@AuthMember Member member,
+    public ResponseEntity<MeetingCreateResponse> createMeeting(@Parameter(hidden = true) @AuthMember Member member,
                                                                @Valid @RequestBody MeetingCreateRequest request) {
         MeetingCreateResponse meetingCreateResponse = meetingService.createMeeting(member, request);
         return ResponseEntity
@@ -37,7 +38,7 @@ public class MeetingController {
 
     @Operation(summary = "약속 전체 조회 API", description = "사용자가 자신이 속한 약속리스트를 전체 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<MeetingListResponse> getMyMeetingList(@AuthMember Member member) {
+    public ResponseEntity<MeetingListResponse> getMyMeetingList(@Parameter(hidden = true) @AuthMember Member member) {
         MeetingListResponse myMeetingList = meetingService.getMyMeetingList(member);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -46,7 +47,7 @@ public class MeetingController {
 
     @Operation(summary = "약속 상세 조회 API", description = "사용자가 자신이 속한 약속을 상세 조회합니다.")
     @GetMapping("/{id}")
-    public ResponseEntity<MeetingDetailResponse> getMeetingDetail(@AuthMember Member member,
+    public ResponseEntity<MeetingDetailResponse> getMeetingDetail(@Parameter(hidden = true) @AuthMember Member member,
                                                                   @PathVariable("id") Long meetingId) {
         MeetingDetailResponse meetingDetail = meetingService.getMeetingDetail(member, meetingId);
         return ResponseEntity
@@ -56,9 +57,8 @@ public class MeetingController {
 
     @Operation(summary = "참여자 도착 예정 시간 업데이트 API", description = "해당 약속의 모든 참여자들의 도착 예정 시간을 업데이트합니다.")
     @PutMapping("/{id}/eta")
-    public ResponseEntity<Void> updateMeetingEta(
-            @AuthMember Member member,
-            @PathVariable("id") Long meetingId) {
+    public ResponseEntity<Void> updateMeetingEta(@Parameter(hidden = true) @AuthMember Member member,
+                                                 @PathVariable("id") Long meetingId) {
         meetingService.updateEtaForMeetingMates(meetingId, member.getId());
         return ResponseEntity
                 .status(HttpStatus.OK)

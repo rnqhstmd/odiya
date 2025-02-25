@@ -36,7 +36,7 @@ public class FcmEventListener {
                 request.getDeviceToken().getValue());
     }
 
-    @Async("fcmAsyncExecutor")
+    @Async("fcmExecutor")
     @EventListener
     public void handleUnSubscribe(SubscribeEvent request) {
         FcmTopic topic = request.getFcmTopic();
