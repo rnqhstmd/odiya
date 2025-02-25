@@ -2,7 +2,7 @@ package org.example.odiya.common.config;
 
 import org.example.odiya.common.Fixture.TokenFixture;
 import org.example.odiya.member.service.MemberQueryService;
-import org.example.odiya.security.jwt.provider.JwtProvider;
+import org.example.odiya.common.security.jwt.provider.JwtProvider;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;

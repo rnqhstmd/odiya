@@ -10,7 +10,7 @@ import org.example.odiya.common.exception.UnauthorizedException;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.service.MemberQueryService;
 import org.example.odiya.member.service.MemberService;
-import org.example.odiya.security.jwt.provider.JwtProvider;
+import org.example.odiya.common.security.jwt.provider.JwtProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

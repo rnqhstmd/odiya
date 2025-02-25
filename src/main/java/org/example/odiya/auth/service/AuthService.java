@@ -9,7 +9,7 @@ import org.example.odiya.common.exception.UnauthorizedException;
 import org.example.odiya.member.domain.Member;
 import org.example.odiya.member.service.MemberQueryService;
 import org.example.odiya.member.service.MemberService;
-import org.example.odiya.security.jwt.provider.JwtProvider;
+import org.example.odiya.common.security.jwt.provider.JwtProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

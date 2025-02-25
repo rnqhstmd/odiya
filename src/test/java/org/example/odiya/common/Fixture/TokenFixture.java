@@ -1,7 +1,7 @@
 package org.example.odiya.common.Fixture;
 
 import org.example.odiya.member.service.MemberQueryService;
-import org.example.odiya.security.jwt.provider.JwtProvider;
+import org.example.odiya.common.security.jwt.provider.JwtProvider;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class TokenFixture {
