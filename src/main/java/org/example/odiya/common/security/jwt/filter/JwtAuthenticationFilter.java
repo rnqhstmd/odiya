@@ -1,4 +1,4 @@
-package org.example.odiya.security.jwt.filter;
+package org.example.odiya.common.security.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.example.odiya.common.exception.ApiException;
 import org.example.odiya.common.exception.InternalServerException;
-import org.example.odiya.security.jwt.provider.JwtProvider;
+import org.example.odiya.common.security.jwt.provider.JwtProvider;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;

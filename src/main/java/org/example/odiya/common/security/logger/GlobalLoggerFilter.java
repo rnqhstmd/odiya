@@ -1,4 +1,4 @@
-package org.example.odiya.security.logger;
+package org.example.odiya.common.security.logger;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

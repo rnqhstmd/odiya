@@ -1,10 +1,10 @@
-package org.example.odiya.security.config;
+package org.example.odiya.common.security.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.odiya.security.handler.CustomAuthenticationEntryPoint;
-import org.example.odiya.security.jwt.filter.JwtAuthenticationFilter;
-import org.example.odiya.security.jwt.filter.JwtExceptionFilter;
-import org.example.odiya.security.logger.GlobalLoggerFilter;
+import org.example.odiya.common.security.handler.CustomAuthenticationEntryPoint;
+import org.example.odiya.common.security.jwt.filter.JwtAuthenticationFilter;
+import org.example.odiya.common.security.jwt.filter.JwtExceptionFilter;
+import org.example.odiya.common.security.logger.GlobalLoggerFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

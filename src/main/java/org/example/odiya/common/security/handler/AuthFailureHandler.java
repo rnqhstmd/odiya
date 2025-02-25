@@ -1,4 +1,4 @@
-package org.example.odiya.security.handler;
+package org.example.odiya.common.security.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

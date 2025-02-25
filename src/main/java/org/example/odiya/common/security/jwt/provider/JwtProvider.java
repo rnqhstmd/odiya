@@ -1,4 +1,4 @@
-package org.example.odiya.security.jwt.provider;
+package org.example.odiya.common.security.jwt.provider;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
