@@ -24,12 +24,12 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+            FilterChain filterChain) throws IOException {
         try {
             filterChain.doFilter(request, response);
         } catch (SecurityException e) {
             log.error("FilterException throw SecurityException Exception : {}", e.getMessage());
-            setErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, ErrorType.NO_AUTHORIZATION_ERROR);
+            setErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, ErrorType.NO_AUTHENTICATION_ERROR);
         } catch (MalformedJwtException e) {
             log.error("FilterException throw MalformedJwtException Exception : {}", e.getMessage());
             setErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, ErrorType.TOKEN_MALFORMED_ERROR);
