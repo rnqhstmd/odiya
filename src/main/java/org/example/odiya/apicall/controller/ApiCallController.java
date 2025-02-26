@@ -7,14 +7,16 @@ import org.example.odiya.apicall.dto.response.ApiCallCountResponse;
 import org.example.odiya.apicall.service.ApiCallService;
 import org.example.odiya.apicall.util.ClientTypeMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "ApiCall API", description = "외부 API 호출 관련 API")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 @RestController
-@RequestMapping("/admin/api-call")
+@RequestMapping("/admin/api/api-call")
 @RequiredArgsConstructor
 public class ApiCallController {
 
