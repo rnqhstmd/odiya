@@ -12,7 +12,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import static org.example.odiya.common.exception.type.ErrorType.NO_AUTHORIZATION_ERROR;
+import static org.example.odiya.common.exception.type.ErrorType.NO_AUTHENTICATION_ERROR;
 
 @Component
 public class AuthMemberArgumentResolver implements HandlerMethodArgumentResolver {
@@ -33,6 +33,6 @@ public class AuthMemberArgumentResolver implements HandlerMethodArgumentResolver
             return authentication.getPrincipal();
         }
 
-        throw new UnauthorizedException(NO_AUTHORIZATION_ERROR);
+        throw new UnauthorizedException(NO_AUTHENTICATION_ERROR);
     }
 }
