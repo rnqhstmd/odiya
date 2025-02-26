@@ -31,6 +31,10 @@ public class Member extends BaseEntity {
     @Embedded
     private DeviceToken deviceToken;
 
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private MemberRole role = MemberRole.USER;
+
     @OneToMany(mappedBy = "member")
     @Builder.Default
     private List<Mate> mates = new ArrayList<>();
