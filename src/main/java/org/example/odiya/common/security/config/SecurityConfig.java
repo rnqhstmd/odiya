@@ -1,6 +1,7 @@
 package org.example.odiya.common.security.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.odiya.common.security.handler.CustomAccessDeniedHandler;
 import org.example.odiya.common.security.handler.CustomAuthenticationEntryPoint;
 import org.example.odiya.common.security.jwt.filter.JwtAuthenticationFilter;
 import org.example.odiya.common.security.jwt.filter.JwtExceptionFilter;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,14 +38,18 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(WHITE_LIST).permitAll()
+                        .requestMatchers("/admin/api/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandler -> exceptionHandler
                         .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new GlobalLoggerFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, GlobalLoggerFilter.class)
+                .addFilterAfter(jwtExceptionFilter, JwtAuthenticationFilter.class);
         return http.build();
     }
 
