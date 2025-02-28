@@ -19,8 +19,10 @@ public enum ErrorType {
     COOKIE_NOT_FOUND_ERROR("COOKIE_40100", "쿠키가 존재하지 않습니다."),
 
     // Auth
-    NO_AUTHORIZATION_ERROR("AUTH_40100", "인증이 없는 사용자입니다."),
+    NO_AUTHENTICATION_ERROR("AUTH_40100", "인증이 없는 사용자입니다."),
     PASSWORD_NOT_MATCH_ERROR("AUTH_40101", "이메일 또는 비밀번호가 일치하지 않습니다."),
+    ADMIN_AUTH_ERROR("AUTH_40300", "관리자 권한이 필요합니다."),
+    NO_AUTHORIZATION_ERROR("AUTH_40301", "접근 권한이 없습니다."),
 
     // Resource
     NO_RESOURCE_ERROR("RESOURCE_40000", "해당 리소스를 찾을 수 없습니다."),

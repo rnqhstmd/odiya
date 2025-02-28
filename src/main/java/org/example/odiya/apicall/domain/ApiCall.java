@@ -46,4 +46,8 @@ public class ApiCall extends BaseEntity {
     public void markAsDisabled() {
         this.enabled = false;
     }
+
+    public void markAsEnabled() {
+        this.enabled = true;
+    }
 }
