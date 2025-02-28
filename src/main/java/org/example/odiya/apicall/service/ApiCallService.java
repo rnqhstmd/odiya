@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.odiya.apicall.domain.ApiCall;
 import org.example.odiya.apicall.domain.ClientType;
 import org.example.odiya.apicall.dto.response.ApiCallCountResponse;
+import org.example.odiya.apicall.dto.response.ClientStatusResponse;
+import org.example.odiya.apicall.dto.response.ClientStatusResponses;
 import org.example.odiya.apicall.repository.ApiCallRepository;
 import org.example.odiya.common.exception.BadRequestException;
 import org.example.odiya.common.exception.InternalServerException;
@@ -20,7 +22,6 @@ import static org.example.odiya.common.exception.type.ErrorType.TOO_MANY_REQUEST
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ApiCallService {
 
@@ -69,7 +70,7 @@ public class ApiCallService {
     public void validateClientsAvailable() {
         Arrays.stream(ClientType.values())
                 .filter(clientType ->
-                                clientType == ClientType.GOOGLE ||
+                        clientType == ClientType.GOOGLE ||
                                 clientType == ClientType.TMAP ||
                                 clientType == ClientType.KAKAO)
                 .forEach(clientType -> {
@@ -87,5 +88,27 @@ public class ApiCallService {
                                 String.format("%s API 호출 한도를 초과했습니다.", clientType.name()));
                     }
                 });
+    }
+
+    @Transactional
+    public ClientStatusResponse updateClientStatus(ClientType clientType, boolean enabled) {
+        ApiCall apiCall = findOrSaveTodayApiCallByClientType(clientType);
+        int apiCallCount = countTotalApiCount(clientType);
+
+        if (enabled) {
+            apiCall.markAsEnabled();
+        } else {
+            apiCall.markAsDisabled();
+        }
+
+        return new ClientStatusResponse(clientType.name(), apiCallCount, enabled);
+    }
+
+    public ClientStatusResponses findAllClientStatuses() {
+        List<ApiCall> apiCalls = Arrays.stream(ClientType.values())
+                .map(this::findOrSaveTodayApiCallByClientType)
+                .toList();
+
+        return ClientStatusResponses.from(apiCalls);
     }
 }
